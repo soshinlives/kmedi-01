@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(awk '/whyus/' /Users/sujinhwang/Documents/1.Develop/4.Claude-Design/Tour3/site/styles.css)",
-      "Bash(awk 'NR>=1 && /\\\\.acc\\\\b/{print NR\": \"$0}' /Users/sujinhwang/Documents/1.Develop/4.Claude-Design/Tour3/site/styles.css)"
-    ]
-  }
-}
