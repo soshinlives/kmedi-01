@@ -2171,7 +2171,7 @@ ul {
     font-weight: 700;
     letter-spacing: var(--tracking-tight);
     text-transform: uppercase;
-    color: inherit;
+    color: var(--white);
     white-space: nowrap;
   }
   .menu-btn {
@@ -2239,23 +2239,16 @@ ul {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 50%;
-    color: var(--white);
+    color: rgba(255, 255, 255, 0.65);
     margin-top: var(--space-5);
-    transition:
-      background 0.3s,
-      border-color 0.3s;
+    transition: color 0.3s;
   }
   .hero__down svg {
-    width: 20px;
-    height: 20px;
+    width: 12px;
+    height: 40px;
   }
   .hero__down:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 1);
   }
   .hero__scroll {
     display: none;
