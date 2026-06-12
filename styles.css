@@ -438,8 +438,7 @@ ul {
 
 .hero__counter {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 32px;
   bottom: 36px;
   z-index: 3;
   display: flex;
@@ -1713,7 +1712,10 @@ ul {
 }
 @media (max-width: 860px) {
   :root {
-    --header-h: 64px;
+    --header-h: 80px;
+  }
+  .gnb-overlay .wrap {
+    padding-top: var(--space-10);
   }
   .stay__grid {
     grid-template-columns: 1fr;
@@ -1788,6 +1790,7 @@ ul {
     transform: translateY(100%);
   }
   .hero__counter {
+    right: 20px;
     bottom: calc(88px + var(--space-6));
   }
   .hero__scroll {
