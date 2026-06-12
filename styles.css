@@ -1608,7 +1608,7 @@ ul {
     width: 100%;
   }
   .hiw-card__step {
-    font-size: var(--text-lg);
+    font-size: var(--text-21);
   }
 }
 
@@ -1804,7 +1804,7 @@ ul {
 
   /* Top button — position above CTA bar */
   .top-btn {
-    bottom: calc(88px + var(--space-12));
+    bottom: calc(88px + var(--space-16));
     right: var(--space-5);
   }
 
