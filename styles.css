@@ -2197,7 +2197,7 @@ ul {
   }
   .hero__title {
     margin-top: 0;
-    font-size: clamp(32px, 10vw, 48px);
+    font-size: clamp(26px, 8vw, 36px);
     line-height: 1.1;
     letter-spacing: -0.02em;
     text-align: center;
