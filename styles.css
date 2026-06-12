@@ -1092,8 +1092,8 @@ ul {
   font-weight: 600;
   letter-spacing: var(--tracking-normal);
   color: var(--chip);
-  border: 2px solid var(--border-2);
-  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-1px);
   transition: 0.3s;
 }
 .filter:hover {
