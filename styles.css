@@ -1001,7 +1001,7 @@ ul {
 }
 .compare__col--ours {
   background: var(--white);
-  border: 3px solid var(--blue-500);
+  border: 3px solid var(--blue-700);
 }
 .compare__title {
   font-family: var(--font-sans);
@@ -1016,7 +1016,7 @@ ul {
 }
 .compare__col--ours .compare__title {
   color: var(--text-heading);
-  border-bottom-color: var(--blue-500);
+  border-bottom-color: var(--blue-700);
 }
 .compare__list {
   display: flex;
@@ -2102,7 +2102,7 @@ ul {
     background: var(--white);
   }
   .compare__col--ours {
-    border: 2px solid var(--blue-500);
+    border: 2px solid var(--blue-700);
   }
   .compare__col:not(.compare__col--ours) {
     border: 2px solid var(--gray-950);
