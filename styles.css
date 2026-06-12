@@ -205,7 +205,7 @@ ul {
   align-items: center;
   justify-content: flex-end;
   gap: var(--space-5);
-  height: var(--space-11);
+  height: var(--space-12);
   font-size: var(--text-12);
   letter-spacing: 0.04em;
 }
