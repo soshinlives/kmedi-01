@@ -1795,18 +1795,28 @@ ul {
   .gnb-overlay .wrap {
     padding-top: 0;
   }
-  /* depth1: 카테고리 레이블 — 작고 회색 */
+  /* depth1: 아코디언 헤더 */
   .gnb-col > h4 {
-    display: block;
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--gray-400);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    padding: var(--space-6) 0 var(--space-3);
-    border-bottom: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-5) 0;
+    font-size: var(--text-21);
+    font-weight: 500;
+    color: var(--gray-900);
+    letter-spacing: var(--tracking-tight);
+    border-bottom: 1px solid var(--border);
     margin-bottom: 0;
-    text-align: left;
+    cursor: pointer;
+  }
+  .gnb-chevron {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  .gnb-col.is-open > h4 .gnb-chevron {
+    transform: rotate(180deg);
   }
   .gnb-cols {
     display: flex;
@@ -1815,40 +1825,29 @@ ul {
     padding: 0;
     border-top: 1px solid var(--border);
   }
-  /* depth2: 주 메뉴 — 크고 gray-900 */
+  /* depth2: 패널 — 기본 숨김 */
   .gnb-col ul {
-    display: flex;
+    display: none;
     flex-direction: column;
     gap: 0;
+    background: var(--gray-50);
+    padding: var(--space-2) var(--space-4);
+  }
+  .gnb-col.is-open ul {
+    display: flex;
   }
   .gnb-col ul > li > a {
     display: block;
     padding: var(--space-4) 0;
-    font-size: var(--text-21);
-    font-weight: 500;
-    color: var(--gray-900);
+    font-size: var(--text-18);
+    font-weight: 400;
+    color: var(--gray-600);
     letter-spacing: var(--tracking-tight);
     line-height: 1.4;
     border-bottom: 1px solid var(--border);
-    text-align: right;
   }
-  /* depth3: 시술 하위 메뉴 */
-  .gnb-sub-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    padding-left: var(--space-4);
-    border-left: 2px solid var(--border);
-    margin: var(--space-2) 0 var(--space-2);
-  }
-  .gnb-sub-list li a {
-    display: block;
-    font-size: var(--text-base);
-    font-weight: 400;
-    color: var(--gray-500);
-    padding: var(--space-2) 0;
+  .gnb-col ul > li:last-child > a {
     border-bottom: none;
-    line-height: 1.6;
   }
   .gnb-sub-head {
     display: none;

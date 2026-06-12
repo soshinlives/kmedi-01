@@ -25,8 +25,19 @@
     closeBtn.addEventListener("click", () => {
       overlay.classList.remove("is-open");
       document.body.style.overflow = "";
+      document.querySelectorAll(".gnb-col.is-open").forEach(c => c.classList.remove("is-open"));
     });
   }
+
+  /* ---------- GNB accordion (mobile) ---------- */
+  document.querySelectorAll(".gnb-col > h4").forEach(h4 => {
+    h4.addEventListener("click", () => {
+      const col = h4.parentElement;
+      const isOpen = col.classList.contains("is-open");
+      document.querySelectorAll(".gnb-col.is-open").forEach(c => c.classList.remove("is-open"));
+      if (!isOpen) col.classList.add("is-open");
+    });
+  });
 
   /* ---------- Hero slider ---------- */
   const slides = [...document.querySelectorAll(".hero__slide")];
