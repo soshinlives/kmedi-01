@@ -1774,7 +1774,7 @@ ul {
 
   /* Accordion */
   .acc-head {
-    font-size: var(--text-lg);
+    font-size: var(--text-21);
     padding: var(--space-5) var(--space-5);
   }
 }
