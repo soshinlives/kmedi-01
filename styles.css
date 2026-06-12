@@ -1433,11 +1433,11 @@ ul {
 }
 .gnb-col a {
   color: var(--text-body2);
-  font-size: var(--text-lg);
+  font-size: var(--text-18);
   letter-spacing: var(--tracking-tight);
   transition: 0.3s;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 450;
   line-height: 1.8;
 }
 .gnb-col a.gnb-link--bold {
