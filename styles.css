@@ -1001,7 +1001,7 @@ ul {
   letter-spacing: var(--tracking-snug);
   padding-bottom: 18px;
   margin-bottom: var(--space-6);
-  border-bottom: 2px solid var(--border-2);
+  border-bottom: 2px solid var(--border);
   color: var(--text-heading);
 }
 .compare__col--ours .compare__title {
@@ -1611,6 +1611,22 @@ ul {
   .hiw-card__step {
     font-size: var(--text-21);
   }
+  .hiw-card__icon svg {
+    display: none;
+  }
+  .hiw-card__icon::before {
+    content: attr(data-num);
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--text-5xl);
+    font-weight: 800;
+    color: var(--blue-500);
+    line-height: 1;
+    letter-spacing: var(--tracking-tighter);
+  }
+  .hiw-step__prefix {
+    display: none;
+  }
   /* Section top padding — consistent across all sections */
   #how.section,
   #services.section,
@@ -1805,11 +1821,11 @@ ul {
     grid-template-columns: 1fr;
   }
   .compare__title {
-    font-size: var(--text-lg);
+    font-size: var(--text-2xl);
     text-align: center;
   }
   .compare__col--ours {
-    border: 2px solid var(--blue-700);
+    border: 2px solid var(--blue-500);
   }
   .compare__col:not(.compare__col--ours) {
     border: 2px solid var(--gray-950);
@@ -1850,7 +1866,8 @@ ul {
     padding: var(--space-5) var(--space-5);
   }
   .acc-body__inner {
-    font-size: var(--text-md);
+    font-size: var(--text-base);
+    font-weight: 600;
   }
 }
 @media (max-width: 600px) {
@@ -1938,8 +1955,9 @@ ul {
   /* whyus intro */
   .whyus__intro {
     font-size: clamp(17px, 4vw, 22px);
+    margin-top: var(--space-10);
   }
   .whyus__intro b {
-    margin-bottom: 26px;
+    margin-bottom: var(--space-10);
   }
 }
