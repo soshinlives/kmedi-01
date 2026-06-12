@@ -1200,6 +1200,15 @@ ul {
   margin-bottom: var(--space-10);
   text-align: center;
 }
+.cta-dark .btn {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid var(--white);
+}
+.cta-dark .btn:hover {
+  background: var(--white);
+  color: var(--gray-950);
+}
 
 /* ============================================================
    FOLLOW US
