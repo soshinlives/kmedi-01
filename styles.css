@@ -1569,11 +1569,11 @@ ul {
   gap: 5px;
 }
 .acc-item {
-  background: var(--gray-150);
-  transition: border-color 0.3s;
+  background: var(--gray-800);
+  transition: background 0.3s, color 0.3s;
 }
 .acc-item.is-open {
-  background: var(--gray-150);
+  background: var(--white);
 }
 .acc-head {
   width: 100%;
@@ -1584,9 +1584,9 @@ ul {
   padding: var(--space-6) 30px;
   text-align: left;
   font-family: var(--font-sans);
-  font-size: 26px;
-  font-weight: 640;
-  color: var(--text-heading);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--white);
   letter-spacing: var(--tracking-tight);
   transition: color 0.3s;
 }
