@@ -1830,7 +1830,7 @@ ul {
     letter-spacing: var(--tracking-tight);
     line-height: 1.4;
     border-bottom: 1px solid var(--border);
-    text-align: left;
+    text-align: right;
   }
   /* depth3: 시술 하위 메뉴 */
   .gnb-sub-list {
