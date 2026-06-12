@@ -191,7 +191,7 @@
       e.preventDefault();
       // clamp drag so it can't pull past first or last slide
       const { step } = metrics();
-      const maxPull = step * 0.3;
+      const maxPull = step * 0.1;
       const clamped =
         fIndex === 0 ? Math.min(dx, maxPull) :
         fIndex === slideCount - 1 ? Math.max(dx, -maxPull) : dx;
