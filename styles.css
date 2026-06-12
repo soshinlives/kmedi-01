@@ -721,7 +721,7 @@ ul {
   margin-top: 15px;
 }
 .stay-card__tags span {
-  font-size: var(--text-sm);
+  font-size: var(--text-12);
   font-weight: 600;
   letter-spacing: var(--tracking-normal);
   padding: 5px 10px 4px;
@@ -1008,7 +1008,7 @@ ul {
   transition: background 0.3s;
 }
 .feature__dots button.is-active {
-  background: var(--text-caption);
+  background: var(--blue-500);
 }
 .feature__nav {
   display: flex;
@@ -1195,7 +1195,7 @@ ul {
   margin-bottom: var(--space-13);
 }
 .filter {
-  padding: var(--space-2-5) 15px;
+  padding: var(--space-1-5) 15px;
   font-size: var(--text-14);
   font-weight: 700;
   letter-spacing: var(--tracking-normal);
