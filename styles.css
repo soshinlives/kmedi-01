@@ -1761,15 +1761,25 @@ ul {
   .hiw-card__icon {
     flex-shrink: 0;
     margin-bottom: 0;
-    margin-top: 3px;
+    margin-top: 0;
   }
   .hiw-card__icon svg {
-    width: 28px;
-    height: 28px;
-    display: block;
+    display: none;
   }
   .hiw-card__icon::before {
-    display: none;
+    content: attr(data-num);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--blue-600);
+    color: var(--white);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    font-weight: 800;
+    flex-shrink: 0;
   }
   .hiw-card__step {
     font-size: var(--text-18);
@@ -1779,7 +1789,7 @@ ul {
     font-size: var(--text-sm);
   }
   .hiw-step__prefix {
-    display: inline;
+    display: none;
   }
   /* Section top padding — consistent across all sections */
   #how.section,
