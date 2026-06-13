@@ -1198,8 +1198,8 @@ ul {
 }
 .compare__col:not(.compare__col--ours) .compare__list li::before {
   content: "✕";
-  color: var(--text-subtle);
-  font-weight: 400;
+  color: var(--gray-600);
+  font-weight: 700;
 }
 .compare__list li > div {
   flex: 1;
