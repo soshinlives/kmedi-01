@@ -2231,6 +2231,8 @@ ul {
   .header-lang-btn {
     display: flex;
     color: var(--gray-950);
+    gap: 4px;
+    padding-right: 4px;
   }
   /* 하단바 v2 활성 / v1 숨김 */
   .mobile-bar--v1 {
