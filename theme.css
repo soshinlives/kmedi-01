@@ -8,27 +8,29 @@
 
   /* ── Gray Scale (번호↑ = 명도↓) ── */
   --white: #ffffff; /* 흰색 */
-  --gray-50: #f8f8fb; /* 배경 서피스 */
-  --gray-150: #eaeaf1; /* 구분선·배경 */
-  --gray-200: #e4e4ec; /* 보더 기본 */
-  --gray-400: #9e9eac; /* 서브텍스트 약 */
-  --gray-500: #727282; /* 본문 텍스트 */
-  --gray-600: #565666; /* 본문 텍스트2 */
-  --gray-800: #2e2e3b; /* 강조 보더 */
-  --gray-900: #1c1c26; /* 헤딩 텍스트 */
-  --gray-950: #141414; /* 최강 다크·버튼 */
+  --gray-50: #f5f7fb; /* 배경 서피스 */
+  --gray-150: #e3e8f0; /* 구분선·배경 */
+  --gray-200: #d8dde8; /* 보더 기본 */
+  --gray-400: #8e97aa; /* 서브텍스트 약 */
+  --gray-500: #68727e; /* 본문 텍스트 */
+  --gray-600: #4f5a6c; /* 본문 텍스트2 */
+  --gray-800: #292e3e; /* 강조 보더 */
+  --gray-900: #181c2a; /* 헤딩 텍스트 */
+  --gray-950: #0e1018; /* 최강 다크·버튼 */
 
-  /* ── Blue Scale (anchor: --blue-700 #07395d = hsl 205° 86% 20%) ── */
-  --blue-500: #0e75be; /* hsl 205° 86% 40% — 캡션·강조 */
-  --blue-600: #0a558a; /* hsl 205° 86% 29% — 중간 강조 */
-  --blue-700: #07395d; /* hsl 205° 86% 20% — 기준색 */
-  --blue-800: #05263e; /* hsl 205° 86% 13% — 딥 네이비 */
+  /* ── Green-Blue Scale ── */
+  --green-blue-400: #1b96ee; /* 라이트 강조 */
+  --green-blue-500: #0e75be; /* 캡션·강조 */
+  --green-blue-600: #0a558a; /* 중간 강조 */
+  --green-blue-700: #07395d; /* 기준색 */
+  --green-blue-800: #05263e; /* 딥 네이비 */
+  --green-blue-900: #031726; /* 최심 다크 */
 
-  /* ── Gold Scale (blue 보색, hue 40–42° 웜 골드/앰버) ── */
-  --gold-500: #e9b949; /* hsl 42° 78% 60% — 밝은 골드 */
-  --gold-600: #d9a326; /* hsl 42° 70% 50% — 미디엄 골드 */
-  --gold-700: #a07622; /* hsl 40° 65% 38% — 딥 앰버 */
-  --gold-800: #6a4d1b; /* hsl 38° 60% 26% — 다크 브론즈 */
+  /* ── Gold Scale ── */
+  --gold-500: #f0bf50; /* 밝은 샴페인 골드 */
+  --gold-600: #d99d1e; /* 미디엄 골드 */
+  --gold-700: #9c6e16; /* 딥 앰버 */
+  --gold-800: #654512; /* 다크 브론즈 */
 
   /* Teal — 라이트 서피스 */
   --teal-100: #dee3e3;
@@ -118,7 +120,7 @@
   --text-body: var(--gray-500);
   --text-body2: var(--gray-600);
   --text-subtle: var(--gray-400);
-  --text-caption: var(--blue-600);
+  --text-caption: var(--green-blue-600);
   --number: var(--gray-900);
 
   /* ─── Semantic: Border ─── */
@@ -136,14 +138,14 @@
   --btn: var(--gray-950);
   --btn-white: var(--white);
   --btn-hover: var(--gray-800);
-  --btn-hover2: var(--blue-700);
-  --btn-hover3: var(--blue-800);
+  --btn-hover2: var(--green-blue-700);
+  --btn-hover3: var(--green-blue-800);
 
   /* ─── Semantic: Accent ─── */
 
-  --accent: var(--blue-500); /* 활성 인디케이터 (슬라이더 도트 등) */
-  --accent-mid: var(--blue-600); /* UI 아이콘 · 체크마크 · 숫자 원 */
-  --accent-dark: var(--blue-700); /* 아코디언 배경 · 비교 제목 · 브랜드 버튼 */
+  --accent: var(--green-blue-500); /* 활성 인디케이터 (슬라이더 도트 등) */
+  --accent-mid: var(--green-blue-600); /* UI 아이콘 · 체크마크 · 숫자 원 */
+  --accent-dark: var(--green-blue-700); /* 아코디언 배경 · 비교 제목 · 브랜드 버튼 */
 
   /* ─── Layout ─── */
 
