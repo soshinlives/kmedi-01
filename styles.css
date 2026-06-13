@@ -1162,7 +1162,7 @@ ul {
   text-align: left;
 }
 .compare__col--ours .compare__title {
-  color: var(--accent-dark);
+  color: var(--accent-mid);
   border-bottom: none;
 }
 .compare__list {
@@ -2478,7 +2478,7 @@ ul {
   }
   .mbar-label {
     font-size: 11px;
-    font-weight: 650;
+    font-weight: 600;
     letter-spacing: 0.04em;
     color: inherit;
     white-space: nowrap;
@@ -2649,7 +2649,7 @@ ul {
     text-align: left;
   }
   .compare__col {
-    padding: var(--space-8) var(--space-6);
+    padding: var(--space-12) var(--space-6);
   }
   .compare__col--ours {
     box-shadow: none;
