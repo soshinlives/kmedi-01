@@ -2165,6 +2165,11 @@ ul {
     border-left: none;
     padding-left: 0;
   }
+  .header {
+    background: var(--bg-white);
+    color: var(--text-heading);
+    box-shadow: 0 1px 0 var(--border);
+  }
   .header__util {
     display: none;
   }
