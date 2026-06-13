@@ -2433,13 +2433,14 @@ ul {
     text-decoration: none;
   }
   .mbar-btn--home {
-    flex: 1.6;
+    flex: none;
+    width: 54px;
     height: 54px;
     background: var(--gray-950);
     color: var(--white);
-    border-radius: 16px;
-    gap: 4px;
-    padding: 0 12px;
+    border-radius: 50%;
+    gap: 0;
+    padding: 0;
   }
   .mbar-btn--home svg {
     width: 18px;
