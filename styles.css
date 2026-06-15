@@ -2274,7 +2274,8 @@ ul {
     height: 20px;
     flex-shrink: 0;
     transition: transform 0.3s ease;
-    stroke-width: 2.5;
+    stroke-width: 3;
+    color: var(--gray-900);
   }
   .gnb-col.is-open > h4 .gnb-chevron {
     transform: rotate(180deg);
@@ -2350,7 +2351,8 @@ ul {
     width: 16px;
     height: 16px;
     transition: transform 0.25s ease;
-    stroke-width: 2.5;
+    stroke-width: 3;
+    color: var(--gray-900);
   }
   .gnb-has-sub.is-open > .gnb-item-row .gnb-sub-chevron {
     transform: rotate(180deg);
@@ -2461,8 +2463,8 @@ ul {
     display: inline-block;
     width: 7px;
     height: 7px;
-    border-top: 1.5px solid var(--gray-500);
-    border-right: 1.5px solid var(--gray-500);
+    border-top: 2px solid var(--gray-900);
+    border-right: 2px solid var(--gray-900);
     transform: rotate(45deg);
     flex-shrink: 0;
     margin-left: 8px;
@@ -2579,6 +2581,7 @@ ul {
   .gnb-overlay__close svg {
     width: 22px;
     height: 22px;
+    stroke-width: 3;
   }
   .header-bell {
     display: flex;
