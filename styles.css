@@ -2575,6 +2575,9 @@ ul {
     width: auto;
     height: auto;
   }
+  .gnb-overlay__brand {
+    margin-top: 20px;
+  }
   .header__util {
     display: none;
   }
