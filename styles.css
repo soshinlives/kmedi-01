@@ -1412,7 +1412,7 @@ ul {
    CTA DARK SECTION
    ============================================================ */
 .cta-dark {
-  background: linear-gradient(135deg, #355e3b 0%, #2d7a52 40%, #3a9e72 70%, #4db88a 100%);
+  background: linear-gradient(135deg, var(--violet-900) 0%, var(--violet-800) 35%, var(--violet-600) 70%, var(--violet-500) 100%);
   color: var(--white);
   padding: clamp(90px, 9vw, 132px) 0;
 }
@@ -1446,7 +1446,7 @@ ul {
 }
 .cta-dark .btn:hover {
   background: var(--white);
-  color: #42926e;
+  color: var(--violet-700);
 }
 
 /* ============================================================
