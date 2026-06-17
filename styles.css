@@ -229,7 +229,7 @@ ul {
   text-underline-offset: 3px;
 }
 .util-sep {
-  width: 1px;
+  width: 2px;
   height: 11px;
   background: currentColor;
   opacity: 0.3;
