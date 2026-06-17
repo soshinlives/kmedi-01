@@ -582,12 +582,12 @@ input[type="password"].login-modal__input {
 }
 .lang-dropdown {
   position: absolute;
-  top: calc(100% + 10px);
+  top: 100%;
   right: 0;
   background: var(--white);
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.13);
-  padding: var(--space-8) 0;
+  padding: calc(var(--space-8) + 10px) 0 var(--space-8);
   min-width: 100px;
   display: none;
   flex-direction: column;
