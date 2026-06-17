@@ -1785,10 +1785,16 @@ ul {
 }
 .gnb-cols {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--space-40);
   padding: 50px 0 var(--space-80);
   border-top: 1px solid var(--border);
+}
+.gnb-cols--sub {
+  padding-top: var(--space-32);
+  padding-bottom: var(--space-40);
+  border-top: 1px solid var(--border);
+  margin-top: calc(var(--space-80) * -1);
 }
 .gnb-col > h4 {
   font-family: var(--font-sans);
@@ -2544,6 +2550,12 @@ ul {
     gap: 0;
     padding: 0;
     border-top: 1px solid var(--border);
+  }
+  .gnb-cols--sub {
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top: none;
   }
   /* depth2: 패널 — 기본 숨김 */
   .gnb-col ul {
