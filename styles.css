@@ -3592,7 +3592,7 @@ body:has(.gnb-overlay.is-open) {
     padding: var(--space-16) var(--space-12);
     font-size: var(--text-17);
     font-weight: 500;
-    color: var(--text-heading);
+    color: var(--gray-900, #1a1e28);
     border-radius: 8px;
     text-align: left;
     transition: background 0.15s;
@@ -3614,7 +3614,7 @@ body:has(.gnb-overlay.is-open) {
   }
   .lang-sheet__opt.is-active {
     font-weight: 700;
-    color: var(--accent-dark);
+    color: var(--gray-900, #1a1e28);
     background: var(--surface);
   }
   /* Hide chat-btn on mobile */
