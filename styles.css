@@ -3419,26 +3419,24 @@ body:has(.gnb-overlay.is-open) {
   .mobile-bar {
     display: flex;
     position: fixed;
-    bottom: 0;
-    left: 0;
-    transform: none;
-    width: 100%;
-    max-width: none;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 28px);
+    max-width: 500px;
     z-index: 500;
-    height: calc(60px + env(safe-area-inset-bottom, 0px));
+    height: 72px;
     background: #ffffff;
-    border-radius: 0;
-    border-top: 1px solid var(--gray-150);
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.09);
-    align-items: flex-start;
-    justify-content: space-around;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
+    align-items: center;
+    justify-content: space-between;
     gap: 0;
-    padding: 0 4px;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding: 0 8px;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
   }
   .mobile-bar.is-hidden {
-    transform: translateY(100%);
+    transform: translateX(-50%) translateY(calc(100% + 24px));
     opacity: 0;
     pointer-events: none;
   }
@@ -3454,12 +3452,12 @@ body:has(.gnb-overlay.is-open) {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 4px;
     flex: 1;
-    height: 60px;
+    height: 100%;
     padding: 0;
     color: var(--gray-400);
-    font-size: 10px;
+    font-size: 11px;
     transition: color 0.2s;
     text-decoration: none;
   }
@@ -3467,43 +3465,13 @@ body:has(.gnb-overlay.is-open) {
   .mbar-btn.is-active {
     color: var(--gray-900);
   }
-  /* 상담예약하기 — 다크 필 CTA */
-  .mobile-bar--v1 .mbar-btn[href="#booking"] {
-    flex: none;
-    flex-direction: row;
-    gap: 5px;
-    height: 38px;
-    align-self: center;
-    background: var(--gray-950);
-    color: var(--white);
-    border-radius: 100px;
-    padding: 0 16px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    margin: 0 4px;
-  }
-  .mobile-bar--v1 .mbar-btn[href="#booking"]:hover,
-  .mobile-bar--v1 .mbar-btn[href="#booking"].is-active {
-    color: var(--white);
-    background: var(--gray-800);
-  }
-  .mobile-bar--v1 .mbar-btn[href="#booking"] svg {
-    width: 14px;
-    height: 14px;
-  }
-  .mobile-bar--v1 .mbar-btn[href="#booking"] .mbar-label {
-    font-size: 11px;
-    font-weight: 700;
-  }
   .mbar-btn--cta {
     flex: 1;
-    height: 60px;
+    height: 100%;
     padding: 0;
     border-radius: 0;
-    gap: 3px;
-    font-size: 10px;
+    gap: 4px;
+    font-size: 11px;
     margin: 0;
   }
   .mbar-btn--cta svg {
