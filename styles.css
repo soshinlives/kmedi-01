@@ -234,6 +234,27 @@ ul {
   background: currentColor;
   opacity: 0.3;
 }
+.util-btn {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 3px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  line-height: 1.6;
+}
+.util-btn:hover { opacity: 0.7; }
+.util-btn--login {
+  color: inherit;
+  border: 1px solid currentColor;
+  opacity: 0.8;
+}
+.util-btn--signup {
+  background: var(--text-heading);
+  color: var(--bg-white);
+  border: 1px solid var(--text-heading);
+  margin-left: 4px;
+}
 .lang-select {
   position: relative;
 }
