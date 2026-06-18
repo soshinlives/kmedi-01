@@ -198,6 +198,27 @@
     });
   });
 
+  /* ---------- Why-Us accordion ---------- */
+  const whyAccItems = [...document.querySelectorAll(".why-acc__item")];
+  function setWhyAcc(item, open) {
+    const body = item.querySelector(".why-acc__body");
+    item.classList.toggle("is-open", open);
+    body.style.maxHeight = open ? body.scrollHeight + "px" : "0px";
+  }
+  whyAccItems.forEach((item) => {
+    item.querySelector(".why-acc__head").addEventListener("click", () => {
+      const willOpen = !item.classList.contains("is-open");
+      whyAccItems.forEach((other) => setWhyAcc(other, false));
+      if (willOpen) setWhyAcc(item, true);
+    });
+  });
+  whyAccItems.forEach((item) => setWhyAcc(item, item.classList.contains("is-open")));
+  window.addEventListener("resize", () => {
+    whyAccItems.forEach((item) => {
+      if (item.classList.contains("is-open")) setWhyAcc(item, true);
+    });
+  });
+
   /* ---------- Feature slider (bounded, no loop) ---------- */
   const fvp = document.querySelector(".feature__viewport");
   if (fvp) {

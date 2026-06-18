@@ -2215,42 +2215,6 @@ body:has(.gnb-overlay.is-open) {
     gap: clamp(24px, 5vw, 60px);
   }
 
-  /* Compare grid */
-  .compare {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  .compare__title {
-    font-size: var(--text-21);
-    text-align: left;
-  }
-  .compare__col {
-    padding: var(--space-48) var(--space-24);
-  }
-  .compare__col--ours {
-    box-shadow: none;
-  }
-  #services.section--surface {
-    background: var(--surface-gray-1);
-  }
-  .compare__list li {
-    padding: var(--space-20) 0;
-    gap: var(--space-24);
-  }
-  .compare__list li::before {
-    width: 26px;
-    height: 26px;
-    font-size: var(--text-13);
-    margin-top: 0;
-  }
-  .compare__list b {
-    font-size: var(--text-18);
-  }
-  .compare__list li > div > span {
-    font-size: var(--text-14);
-    font-weight: 500;
-  }
-
   /* Footer */
   .footer__mid {
     grid-template-columns: 1fr;
