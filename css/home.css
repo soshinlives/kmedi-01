@@ -773,9 +773,14 @@
   }
   .why-cta,
   .treat-cta {
-    margin-top: 0;
     margin-left: calc(-1 * var(--gutter));
     margin-right: calc(-1 * var(--gutter));
+  }
+  .why-cta {
+    margin-top: 0;
+  }
+  .treat-cta {
+    margin-top: var(--gutter);
   }
   #whyus.section,
   #treatments.section {
@@ -1319,9 +1324,11 @@
   .treat-card__body {
     padding: 16px 14px;
   }
-  .treat-cta,
   .why-cta {
     margin-top: 0;
+  }
+  .treat-cta {
+    margin-top: var(--gutter);
   }
   .treat-cta .btn,
   .why-cta .btn,
