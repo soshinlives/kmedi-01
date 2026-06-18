@@ -3,35 +3,51 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KMEDITOUR — Premium Concierge in Korea</title>
+<title>KMEDITOUR — 프리미엄 컨시어지 인 코리아 | Premium Concierge in Korea</title>
+<meta name="description" content="KMEDITOUR는 한국 뷰티·의료·관광을 아우르는 프리미엄 컨시어지 서비스입니다. 전담 코디네이터가 처음부터 끝까지 함께합니다. Premium Concierge in Korea." />
+<meta name="keywords" content="한국 의료관광, K-뷰티, 한국 성형, 한국 피부과, KMEDITOUR, 프리미엄 컨시어지, Premium Concierge Korea, Korean medical tourism, K-beauty" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://kmeditour.com/" />
+<meta property="og:title" content="KMEDITOUR — Premium Concierge in Korea" />
+<meta property="og:description" content="뷰티·의료·관광, 한국의 모든 케어를 한 곳에서. 전담 코디네이터가 당신의 특별한 한국 여행을 완성합니다." />
+<meta property="og:image" content="https://kmeditour.com/assets/og/og-home.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:site_name" content="KMEDITOUR" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="KMEDITOUR — Premium Concierge in Korea" />
+<meta name="twitter:description" content="뷰티·의료·관광, 한국의 모든 케어를 한 곳에서. 전담 코디네이터가 당신의 특별한 한국 여행을 완성합니다." />
+<meta name="twitter:image" content="https://kmeditour.com/assets/og/og-home.jpg" />
 <link rel="stylesheet" href="css/reset.css" />
 <link rel="stylesheet" href="css/theme.css" />
 <link rel="stylesheet" href="css/common.css" />
 <link rel="stylesheet" href="css/home.css" />
 </head>
 <body>
+<a class="skip-link" href="#main-content">본문으로 이동</a>
 
 <!-- ============================== HEADER ============================== -->
 <header class="header">
   <div class="header__util">
     <div class="wrap">
       <a href="center.html" class="util-ext-link">휴그로센터<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
-      <span class="util-sep"></span>
+      <span class="util-sep" aria-hidden="true"></span>
       <a href="#" class="util-ext-link">쇼핑<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
-      <span class="util-sep"></span>
+      <span class="util-sep" aria-hidden="true"></span>
       <a href="#">자주묻는질문</a>
-      <span class="util-sep"></span>
+      <span class="util-sep" aria-hidden="true"></span>
       <a href="about.html">회사소개</a>
-      <span class="util-sep"></span>
+      <span class="util-sep" aria-hidden="true"></span>
       <a href="#" id="loginTrigger" class="util-user-circle" aria-label="로그인 / 회원가입">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="9" r="3"/><path d="M6.5 20v-.5a5.5 5.5 0 0 1 11 0v.5"/></svg>
       </a>
-      <span class="util-sep"></span>
+      <span class="util-sep" aria-hidden="true"></span>
       <div class="lang-select">
-        <button class="lang-select__btn">
+        <button class="lang-select__btn" aria-expanded="false" aria-haspopup="listbox" aria-label="언어 선택">
           <span class="lang-flag"><img src="assets/flag/flag_south korea.svg" width="22" height="16" alt="KR" /></span>
           <span class="lang-code">KR</span>
-          <svg class="lang-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <svg class="lang-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <ul class="lang-dropdown">
           <li class="lang-option is-active"><span><img src="assets/flag/flag_south korea.svg" width="22" height="16" alt="KR" /></span>KR</li>
@@ -72,7 +88,7 @@
 </header>
 
 <!-- ============================== GNB OVERLAY ============================== -->
-<div class="gnb-overlay gnb-overlay--dark">
+<div class="gnb-overlay gnb-overlay--dark" role="dialog" aria-modal="true" aria-label="사이트 내비게이션" aria-hidden="true">
   <div class="wrap">
     <div class="gnb-overlay__bar">
       <a href="#" class="brand gnb-overlay__brand">KMEDITOUR<small>Premium Concierge in Korea</small></a>
@@ -86,7 +102,7 @@
         <!-- 1행: 서비스, 스페이스, 쇼핑, 소식 -->
     <div class="gnb-cols">
       <div class="gnb-col gnb-col--mobile-only">
-        <h4 data-en="About">소개<svg class="gnb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></h4>
+        <h4 data-en="About">소개<svg class="gnb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></h4>
         <ul>
           <li><a href="about.html" data-en="Who We Are">KMEDITOUR</a></li>
           <li><a href="center.html" data-en="Hugro Center">휴그로센터</a></li>
@@ -96,7 +112,7 @@
         </ul>
       </div>
       <div class="gnb-col">
-        <h4 data-en="Our Services">서비스<svg class="gnb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></h4>
+        <h4 data-en="Our Services">서비스<svg class="gnb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></h4>
         <ul>
           <li class="gnb-has-sub">
             <div class="gnb-item-row">
@@ -134,21 +150,21 @@
         </ul>
       </div>
       <div class="gnb-col">
-        <h4 data-en="Shopping">쇼핑<svg class="gnb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></h4>
+        <h4 data-en="Shopping">쇼핑<svg class="gnb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></h4>
         <ul>
           <li><a href="#">나의 피부 타입 찾기 🌸</a></li>
           <li><a href="#">코스메틱 제품 둘러보기 🌸</a></li>
         </ul>
       </div>
       <div class="gnb-col">
-        <h4 data-en="Space">스페이스<svg class="gnb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></h4>
+        <h4 data-en="Space">스페이스<svg class="gnb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></h4>
         <ul>
           <li><a href="#">피부분석 시스템 🌸</a></li>
           <li><a href="center.html">휴그로센터</a></li>
         </ul>
       </div>
       <div class="gnb-col">
-        <h4 data-en="News">소식<svg class="gnb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></h4>
+        <h4 data-en="News">소식<svg class="gnb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></h4>
         <ul>
           <li><a href="#" data-en="Event">이벤트</a></li>
           <li><a href="#" data-en="Magazine">매거진</a></li>
@@ -156,7 +172,7 @@
         </ul>
       </div>
       <div class="gnb-col gnb-col--about-desktop">
-        <h4 data-en="About">소개<svg class="gnb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></h4>
+        <h4 data-en="About">소개<svg class="gnb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></h4>
         <ul>
           <li><a href="about.html" data-en="Who We Are">KMEDITOUR</a></li>
           <li><a href="center.html" data-en="Hugro Center">휴그로센터</a></li>
@@ -213,6 +229,8 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
   </a>
 </div>
+
+<main id="main-content">
 
 <!-- ============================== HERO ============================== -->
 <section class="hero">
@@ -362,25 +380,25 @@
     <p class="services__intro" data-reveal>지방흡입, 미용 시술, 모발 이식, 건강검진부터<br class="mo-br"/> 프리미엄 서울 관광까지 —<br/>분야별 최고의 전문가를 찾아 연결합니다.</p>
     <div class="acc" data-reveal>
       <div class="acc-item is-open">
-        <button class="acc-head">뷰티<span class="acc-icon"></span></button>
+        <button class="acc-head" aria-expanded="true">뷰티<span class="acc-icon" aria-hidden="true"></span></button>
         <div class="acc-body">
           <div class="acc-body__inner"><span>내용이 들어갑니다. 내용이 들어갑니다.</span><a href="#" class="acc-detail-link">자세히 보기 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></div>
         </div>
       </div>
       <div class="acc-item">
-        <button class="acc-head">메디컬<span class="acc-icon"></span></button>
+        <button class="acc-head" aria-expanded="false">메디컬<span class="acc-icon" aria-hidden="true"></span></button>
         <div class="acc-body">
           <div class="acc-body__inner"><span>내용이 들어갑니다. 내용이 들어갑니다. 내용이 들어갑니다.</span><a href="#" class="acc-detail-link">자세히 보기 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></div>
         </div>
       </div>
       <div class="acc-item">
-        <button class="acc-head">트래블<span class="acc-icon"></span></button>
+        <button class="acc-head" aria-expanded="false">트래블<span class="acc-icon" aria-hidden="true"></span></button>
         <div class="acc-body">
           <div class="acc-body__inner"><span>내용이 들어갑니다. 내용이 들어갑니다. 내용이 들어갑니다.</span><a href="#" class="acc-detail-link">자세히 보기 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></div>
         </div>
       </div>
       <div class="acc-item">
-        <button class="acc-head">휴그로센터<span class="acc-icon"></span></button>
+        <button class="acc-head" aria-expanded="false">휴그로센터<span class="acc-icon" aria-hidden="true"></span></button>
         <div class="acc-body">
           <div class="acc-body__inner"><span>내용이 들어갑니다. 내용이 들어갑니다. 내용이 들어갑니다.</span><a href="#" class="acc-detail-link">자세히 보기 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></div>
         </div>
@@ -763,6 +781,8 @@
     </div>
   </div>
 </section>
+
+</main>
 
 <!-- ============================== FOOTER ============================== -->
 <footer class="footer">

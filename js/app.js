@@ -21,11 +21,14 @@
     openBtns.forEach(btn => {
       btn.addEventListener("click", () => {
         overlay.classList.add("is-open");
+        overlay.setAttribute("aria-hidden", "false");
         document.body.style.overflow = "hidden";
+        if (closeBtn) closeBtn.focus();
       });
     });
     if (closeBtn) closeBtn.addEventListener("click", () => {
       overlay.classList.remove("is-open");
+      overlay.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
       document.querySelectorAll(".gnb-col.is-open").forEach(c => c.classList.remove("is-open"));
       document.querySelectorAll(".gnb-has-sub.is-open").forEach(s => s.classList.remove("is-open"));
@@ -183,8 +186,10 @@
   const accItems = [...document.querySelectorAll(".acc-item")];
   function setAcc(item, open) {
     const body = item.querySelector(".acc-body");
+    const head = item.querySelector(".acc-head");
     item.classList.toggle("is-open", open);
     body.style.maxHeight = open ? body.scrollHeight + "px" : "0px";
+    if (head) head.setAttribute("aria-expanded", String(open));
   }
   accItems.forEach((item) => {
     const head = item.querySelector(".acc-head");
@@ -334,6 +339,20 @@
   }
 
   /* ---------- Desktop lang-select dropdown ---------- */
+  document.querySelectorAll(".lang-select").forEach(sel => {
+    const btn = sel.querySelector(".lang-select__btn");
+    const dropdown = sel.querySelector(".lang-dropdown");
+    if (!btn || !dropdown) return;
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = sel.classList.toggle("is-open");
+      btn.setAttribute("aria-expanded", String(isOpen));
+    });
+    document.addEventListener("click", () => {
+      sel.classList.remove("is-open");
+      btn.setAttribute("aria-expanded", "false");
+    });
+  });
   document.querySelectorAll(".lang-option").forEach(opt => {
     opt.addEventListener("click", () => {
       const code = opt.textContent.trim();
@@ -346,6 +365,12 @@
           img.src = flagImg.src;
           img.alt = flagImg.alt;
         });
+      }
+      const parentSel = opt.closest(".lang-select");
+      if (parentSel) {
+        parentSel.classList.remove("is-open");
+        const parentBtn = parentSel.querySelector(".lang-select__btn");
+        if (parentBtn) parentBtn.setAttribute("aria-expanded", "false");
       }
     });
   });
