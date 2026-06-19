@@ -1,9 +1,9 @@
 # Token Mapping Table
 
-현재 메인 페이지(index.html + css/reset.css · css/common.css · css/home.css · css/about.css · css/center.css)에서 실제 사용 중인 모든 토큰의 완전한 매핑표입니다.
+현재 구현 완료된 모든 페이지(index.html · about.html · center.html · skin-sol.html + css/reset.css · css/common.css · css/home.css · css/about.css · css/center.css · css/skin-sol.css)에서 실제 사용 중인 모든 토큰의 완전한 매핑표입니다.
 
 > **기준**: Semantic First — primitive를 디자인 판단 기준으로 보지 않습니다.
-> **최종 업데이트 2026-06-18**: Why-Us 개편 반영. Active Semantic **28개**, Direct Primitive **4건**.
+> **최종 업데이트 2026-06-19**: skin-sol 페이지 추가. Active Semantic **28개**, Direct Primitive **12건** (pss 배지 전용 8건 신규 포함).
 
 ---
 
@@ -25,7 +25,8 @@
 | `--text-gray-6` | `--gray-900` | #1a1e28 | ✓ | 헤딩 전반, link-arrow, btn outline, gnb, compare title | 최다 사용 |
 | `--text-gray-7` | `--gray-950` | #101219 | ✓ | 최강 강조 — 모바일 헤더, login modal 제목 | |
 | `--text-white` | `--white` | #ffffff | ✓ | 다크/컬러 배경 위 흰색 — hero, trust, cta-dark, hiw | |
-| `--text-caption` | `--violet-500` | #3b33d9 | ✓ | eyebrow, kicker, bk-label, booking tab underline | accent-blue1와 동일값 |
+| `--text-caption`  | `--violet-500` | #3b33d9 | ✓ | eyebrow, kicker, bk-label, booking tab underline | accent-blue1와 동일값 |
+| `--text-caption2` | `--gold-600`   | #9b7943 | ✓ | .ihc__level (Inside Hugro 플로어 레이블) | 골드 캡션 전용 |
 | `--rating` | `--amber-400` | #d9ad3f | ✓ | 별점 (review__star, treat-card__en) | |
 | `--border-gray-1` | `--gray-200` | #dcdfe5 | ✓ | 기본 구분선 (card, feature, gnb, hiw-grid) | 최다 사용 |
 | `--border-gray-2` | `--gray-300` | #b8bdc7 | ✓ | 연한 구분선 (mobile gnb) | |
@@ -62,18 +63,24 @@
 | `--gray-950` | #101219 | `--bg-dark`, `--btn-primary`, `--text-gray-7` | — | 삼중 매핑 |
 | `--brown-50` | #f7f4f2 | `--surface-gray-3` | — | |
 | `--brown-100`~`--brown-900` | — | — | — | Palette (미사용) |
-| `--violet-50`~`--violet-200` | — | — | — | Palette |
-| `--violet-300` | #8681e4 | — | about.css (직접) | accent-light 삭제 후 직접 참조 |
+| `--violet-50`  | #efeffb | — | skin-sol.css · common.css (직접) | hover bg, step active bg, 결과 배지 bg / contact email icon bg |
+| `--violet-100` | #dcdaf7 | — | skin-sol.css (직접) | 성분 카드 배지 bg |
+| `--violet-200` | — | — | — | Palette |
+| `--violet-300` | #8681e4 | — | about.css · skin-sol.css (직접) | eyebrow 강조색 · accent-light 삭제 후 직접 참조 |
 | `--violet-400` | #6861e0 | — | — | Palette |
-| `--violet-500` | #3b33d9 | `--text-caption`, `--accent-blue1` | — | 이중 매핑 |
-| `--violet-600` | #2e26b5 | `--btn-secondary` | home.css (직접) | why-journey icon wrap bg + sub color |
+| `--violet-500` | #3b33d9 | `--text-caption`, `--accent-blue1` | skin-sol.css (직접) | 이중 매핑 + 결과 배지 color 직접 참조 |
+| `--violet-600` | #2e26b5 | `--btn-secondary` | home.css · skin-sol.css (직접) | why-journey + 결과 배지 color |
 | `--violet-700` | #2a2287 | `--accent-blue2` | — | |
 | `--violet-800` | #1f1957 | `--accent-blue3` | — | |
 | `--violet-900` | #151132 | `--accent-gradient` (내부) | — | |
-| `--amber-400` | #d9ad3f | `--rating` | — | |
-| `--amber-100`~`--amber-900` | — | — | — | Palette (`--amber-400` 외 미사용) |
+| `--amber-400` | #d9ad3f | `--rating` | skin-sol.css (직접) | 퀴즈·결과 별점 (`--rating`과 동일값) |
+| `--amber-500` | #c99b30 | — | skin-sol.css (직접) | 결과 배지 color |
+| `--amber-600` | #b58522 | — | skin-sol.css (직접) | 결과 배지 bg (`--text-caption2`와 동일값) |
+| `--amber-100`~`--amber-300`, `--amber-700~900` | — | — | — | Palette (미사용) |
 | `--gold-600` | #9b7943 | — | home.css (직접) | text-gold 삭제 후 직접 참조 |
 | `--gold-500`, `--gold-700~800` | — | — | — | Palette |
+| `--teal-50`  | #e8f6f0 | — | common.css (직접) | `.contact-popup__icon--phone` bg |
+| `--teal-500` | #2e9b6a | — | common.css (직접) | `.contact-popup__icon--phone` color |
 | `--kakao-yellow` | #fee500 | `--btn-kakao` | — | |
 | `--kakao-dark` | #191919 | `--btn-kakao-text` | — | |
 
@@ -83,14 +90,25 @@
 
 semantic 없이 CSS 파일에서 primitive를 직접 참조하는 항목. 삭제된 semantic의 자리.
 
-| Primitive | 파일 | Selector | 사유 |
-|-----------|-----|---------|-----|
-| `--violet-300` | about.css | `.guarantee-col__icon` | `--accent-light` 삭제 후 직접 유지 |
-| `--gold-600` | home.css | `.treat-highlight` | `--text-gold` 삭제 후 직접 유지 |
-| `--violet-600` | home.css | `.why-journey__icon-wrap` | why-journey 아이콘 원 배경 — `--btn-secondary`와 동일값이나 의미 불일치 |
-| `--violet-600` | home.css | `.why-journey__icon-sub` | why-journey 서브타이틀 컬러 — `--btn-secondary`와 동일값이나 의미 불일치 |
+| Primitive      | 파일                  | Selector / 위치                           | 사유                                               |
+| -------------- | --------------------- | ----------------------------------------- | -------------------------------------------------- |
+| `--violet-300` | about.css             | `.guarantee-col__icon`                    | `--accent-light` 삭제 후 직접 유지                 |
+| `--gold-600`   | home.css              | `.treat-highlight`                        | `--text-gold` 삭제 후 직접 유지                    |
+| `--violet-600` | home.css              | `.why-journey__icon-wrap`                 | 아이콘 원 배경 — `--btn-secondary`와 동일값, 의미 불일치 |
+| `--violet-600` | home.css              | `.why-journey__icon-sub`                  | 서브타이틀 컬러 — 동일 이유                        |
+| `--violet-300` | skin-sol.css | `.pss-hero__eyebrow`                      | 히어로 eyebrow — semantic 미배정                   |
+| `--violet-50`  | skin-sol.css | hover bg · step active · 결과 배지 bg    | 연한 바이올렛 면 — semantic 미배정                 |
+| `--violet-50`  | common.css            | `.contact-popup__icon--email` bg          | 이메일 아이콘 연보라 배경 — semantic 미배정         |
+| `--teal-50`    | common.css            | `.contact-popup__icon--phone` bg          | 전화 아이콘 민트 배경 — 단일 사용처                |
+| `--teal-500`   | common.css            | `.contact-popup__icon--phone` color       | 전화 아이콘 민트 색상 — 단일 사용처                |
+| `--violet-100` | skin-sol.css | 성분 카드 배지 bg                          | 한 단계 진한 연보라 배지                           |
+| `--violet-500` | skin-sol.css | 결과 배지 color                            | `--accent-blue1`과 동일값, 배지 전용               |
+| `--violet-600` | skin-sol.css | 결과·성분 카드 배지 color                  | midtone violet — semantic 미배정                   |
+| `--amber-400`  | skin-sol.css | 퀴즈·결과 별점                             | `--rating`과 동일값                                |
+| `--amber-500`  | skin-sol.css | 결과 배지 color                            | midtone amber — semantic 미배정                    |
+| `--amber-600`  | skin-sol.css | 결과 배지 bg                               | `--text-caption2`와 동일값, 배지 bg 전용           |
 
-**Direct CSS 건수: 4건** (의도적, 관리 대상)
+**Direct CSS 건수: 15건** (의도적, 관리 대상 · pss 배지 8건 결과 카드 전용 · contact popup 3건 신규)
 
 ---
 
@@ -139,6 +157,9 @@ semantic 없이 CSS 파일에서 primitive를 직접 참조하는 항목. 삭제
 | `rgba(255,255,255,0.92)` | hero desc | 반투명 텍스트 |
 | `rgba(0,0,0,0.45)` | hero counter | 슬라이드 카운터 bg |
 | `rgba(255,255,255,0.78)` | compare ours / trust body | 다크 bg 위 반투명 |
+| `rgba(255,255,255,0.65)` | skin-sol.css `.pss-hero__desc` | 다크 hero 위 반투명 텍스트 |
+| `rgba(59,51,217,0.08~0.2)` | skin-sol.css option hover · step active | focus ring shadow |
+| 하드코딩 배지 hex (`#e8eafb` 등 12종) | skin-sol.css `.pss-icon--*` | 결과 배지 개별 색상 |
 | `linear-gradient(rgba...)` | stay-card, mem-card, follow-card | 이미지 그라디언트 오버레이 |
 | `rgba(0,0,0,0.14)` | mobile-bar shadow | 하단 바 그림자 |
 | `29px`, `14.5px`, `13.5px` | brand, col-card, footer | 특수 px 폰트 (수동 검토 필요) |
@@ -155,9 +176,9 @@ semantic 없이 CSS 파일에서 primitive를 직접 참조하는 항목. 삭제
 | — Text | 10 (text-gray-1~7, text-white, text-caption, rating) |
 | — Border | 4 (border-gray-1~4) |
 | — Button | 2 (btn-primary, btn-secondary) |
-| — Accent | 4 (accent-blue1, dark1, dark2, gradient) |
+| — Accent | 4 (accent-blue1, accent-blue2, accent-blue3, accent-gradient) |
 | — Social | 2 (btn-kakao, btn-kakao-text) |
-| Direct Primitive Usage | **4건** (violet-300 · gold-600 · violet-600×2 · 의도적) |
+| Direct Primitive Usage | **15건** (기존 4건 + pss 배지 8건 + contact popup 3건 신규) |
 | Hard-coded rgba | ~20건 (의도된 투명도 · 유지) |
 | Deleted this session | 30건 |
 
@@ -165,8 +186,11 @@ semantic 없이 CSS 파일에서 primitive를 직접 참조하는 항목. 삭제
 
 **변경 이력:**
 
+- **2026-06-19 (Contact Popup · CSS 연결 보완)**: `--teal-50`/`--teal-500` Primitive 테이블 신규 추가 (contact popup 전화 아이콘 전용). `--violet-50` direct CSS에 common.css 이메일 아이콘 bg 추가. Direct Primitive Usage 12건 → **15건**. common.css `.chat-btn.is-open` `--violet-600`→`--btn-secondary`, `.chat-btn.is-open:hover` `--violet-800`→`--accent-blue3`, `.contact-popup__close:hover` `--gray-900`→`--text-gray-6` 3건 semantic 교체.
+- **2026-06-19 (skin-sol 추가)**: 분석 대상에 `skin-sol.html` + `css/skin-sol.css` 포함. Primitive 매핑 테이블에 `--violet-50/100` 신규 직접 참조 행 추가. `--violet-300/500/600`, `--amber-400/500/600` direct CSS 열 업데이트. Direct Primitive Usage **12건**. Hard-coded Values에 pss 3종 추가.
 - **2026-06-18 (Violet 전환)**: Blue scale 제거. Accent violet 통일.
 - **2026-06-18 (Token Audit 완료)**: Semantic 36개로 확장. Direct primitive 0건.
 - **2026-06-18 (Token Cleanup)**: 중복/저사용 30개 삭제. 번호형 명명 체계 전환. Background/Surface 분리. Button 카테고리 신설. **Active Semantic 28개, Direct 2건.**
 - **2026-06-18 (Why-Us 개편)**: why-acc 아코디언 제거 → 5-col 카드 그리드. `--violet-600` direct 2건 추가 (icon-wrap, icon-sub). `--text-gray-5` 사용처 +1. **Direct 4건.**
 - **2026-06-18 (reset.css 신설)**: 브라우저 리셋 분리. 중복 제거: `box-sizing: border-box` (login-modal__input), `list-style: none` + `margin: 0` (proc-sheet__list), `list-style: none` + `padding: 0` + `margin: 0` (why-journey__icons).
+- **2026-06-18 (Token Rename ×2)**: `--btn-cta` → `--btn-secondary`. `--accent-mid/dark1/dark2` → `--accent-blue1/blue2/blue3`. theme.css, common.css, home.css, about.css 전체 반영.

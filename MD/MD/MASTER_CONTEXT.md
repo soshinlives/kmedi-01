@@ -152,6 +152,7 @@ Reference Implementation
 
 - About_Page_Spec_v0.2.md — about.html 브랜드 방향·목적 정의
 - Center_Page_Spec.md — center.html 에디토리얼 경험 기사 스펙 (휴그로센터)
+- Personal_Skin_Sol_Page_Spec.md — skin-sol.html (퍼스널 스킨 솔루션) — 2026-06-19 작성
 
 ---
 
@@ -170,6 +171,7 @@ Reference Implementation
 - index.html (메인 페이지)
 - about.html (소개 페이지)
 - center.html (휴그로센터 페이지)
+- skin-sol.html (퍼스널 스킨 솔루션 페이지)
 
 **CSS** (`css/` 폴더 — 페이지별 분리)
 
@@ -179,11 +181,13 @@ Reference Implementation
 - css/home.css (Home / index.html 전용 스타일)
 - css/about.css (About 페이지 전용 스타일)
 - css/center.css (Center 페이지 전용 스타일)
+- css/skin-sol.css (Personal Skin Solution 페이지 전용 스타일)
 
 **JS** (`js/` 폴더)
 
 - js/app.js (인터랙션)
 - js/image-slot.js (커스텀 이미지 슬롯)
+- js/contact-popup.js (문의하기 플로팅 버튼 + 팝업 — 모든 페이지 공통 주입)
 
 현재 구현된 결과를 우선 기준으로 사용한다.
 

@@ -886,6 +886,15 @@ body.show-prim .sw .h .pm { display: inline; }
       .mobile-bar · .lang-sheet · .proc-sheet · .login-modal · .chat-btn
     </div>
     <div style="background:var(--surface-gray-1);border-radius:8px;padding:16px 20px;font-size:13.5px;line-height:2;color:var(--text-gray-3);">
+      <strong style="color:var(--text-gray-6);display:block;margin-bottom:4px;">Contact Popup (문의하기 플로팅)</strong>
+      .chat-btn (is-open) · .contact-popup · .contact-popup__card · .contact-popup__head<br>
+      .contact-popup__title · .contact-popup__sub · .contact-popup__close<br>
+      .contact-popup__item · .contact-popup__icon (--email / --phone)<br>
+      .contact-popup__item-body · .contact-popup__item-label · .contact-popup__item-value · .contact-popup__item-hint<br>
+      .contact-popup__login-btn · .contact-popup__copy-btn (is-copied)<br>
+      <span style="font-size:12px;color:var(--text-gray-4);">js/contact-popup.js — 모든 페이지 공통 주입 · chat-btn + popup HTML insertAdjacentHTML</span>
+    </div>
+    <div style="background:var(--surface-gray-1);border-radius:8px;padding:16px 20px;font-size:13.5px;line-height:2;color:var(--text-gray-3);">
       <strong style="color:var(--text-gray-6);display:block;margin-bottom:4px;">공통 섹션 컴포넌트</strong>
       .trust (Trust Band) · [data-reveal] (Scroll Animation)
     </div>
@@ -897,7 +906,7 @@ body.show-prim .sw .h .pm { display: inline; }
 
   <!-- page CSS 섹션 목록 -->
   <h2>페이지 전용 CSS</h2>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
     <div style="border:1px solid var(--border-gray-1);border-radius:10px;padding:20px 22px;">
       <div style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-caption);margin-bottom:12px;">home.css</div>
       <div style="font-size:13px;line-height:2.1;color:var(--text-gray-3);">
@@ -932,6 +941,17 @@ body.show-prim .sw .h .pm { display: inline; }
         Location · CTA Banner
       </div>
     </div>
+    <div style="border:1px solid var(--border-gray-1);border-radius:10px;padding:20px 22px;">
+      <div style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-caption);margin-bottom:12px;">personal-skin-sol.css</div>
+      <div style="font-size:13px;line-height:2.1;color:var(--text-gray-3);">
+        Dark Hero (eyebrow · title · desc)<br>
+        Sol-Nav (탭 · 브레드크럼 · 단계표시)<br>
+        Quiz Slider (4단계 좌우 슬라이드)<br>
+        Skin Category Card · Option Card<br>
+        AI 분석 결과 (타입 · 성분 · 제품)<br>
+        결과 배지 12종 (피부 타입별 색상)
+      </div>
+    </div>
   </div>
 
   <!-- 확장 가이드 -->
@@ -962,8 +982,8 @@ const SEM_GROUPS = [
   {
     key: 'text',
     title: 'Text',
-    desc: 'gray-1~7: 밝은(gray-300)→어두운(gray-950) 순 · inverse(흰글) · caption(violet) · rating(amber)',
-    tokens: ['text-gray-1','text-gray-2','text-gray-3','text-gray-4','text-gray-5','text-gray-6','text-gray-7','text-white','text-caption','rating']
+    desc: 'gray-1~7: 밝은(gray-300)→어두운(gray-950) 순 · inverse(흰글) · caption(violet) · caption2(gold) · rating(amber)',
+    tokens: ['text-gray-1','text-gray-2','text-gray-3','text-gray-4','text-gray-5','text-gray-6','text-gray-7','text-white','text-caption','text-caption2','rating']
   },
   {
     key: 'border',
@@ -1266,5 +1286,6 @@ document.querySelectorAll('.tab').forEach(t => {
   });
 });
 </script>
+<script src="js/contact-popup.js"></script>
 </body>
 </html>

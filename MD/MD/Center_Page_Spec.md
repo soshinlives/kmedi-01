@@ -4,7 +4,7 @@
 
 ---
 
-# 현재 구현 상태 (2026-06-18 기준)
+# 현재 구현 상태 (2026-06-19 기준)
 
 파일: `center.html`, `css/reset.css`, `css/theme.css`, `css/common.css` (공유), `css/center.css`
 
@@ -18,19 +18,78 @@
 | AI 피부 분석 | `.art-section` (Section 01 kicker) | Section 04 (The Experience) | ✓ 구현 |
 | 맞춤 스킨케어 캐러셀 | `.treatment-carousel` | Section 04 계속 | ✓ 구현 |
 | 건물 안내 (Hugro Building) | `.building-info` | Section 05 일부 | ✓ 구현 |
-| Inside Hugro (층별 그리드) | `.floors-grid` (B1·1F·2F) | Section 05 (Inside Hugro) | ✓ 구현 |
+| Inside Hugro 캐러셀 | `.ihc` (B1·1F·2F) | Section 05 (Inside Hugro) | ✓ 구현 — 2026-06-19 캐러셀로 교체 |
 | Location (지도) | `.location-section` + `.map-card` | Section 06 (Location Story) | ✓ 구현 |
 | CTA 배너 | `.cta-banner#consultation` | Section 07 (Visit Hugro) | ✓ 구현 |
+| 앱 배너 | `.app-banner` | — (스펙 외 추가) | ✓ 추가 구현 |
+| 연관 포스트 | `.related-posts` | Section 08 (Related Content) | ✓ 구현 |
 | Footer + 모바일 하단바 | `.footer`, `.mobile-bar` | — (공통 컴포넌트) | ✓ 구현 |
 | 로그인 모달 | `.login-modal#loginModal` | — (스펙 외 추가) | ✓ 추가 구현 |
+
+## CSS 아키텍처 (center.css)
+
+| 변수 / 패턴 | 값 | 용도 |
+|---|---|---|
+| `--section-gap` | `clamp(36px, 6vw, 72px)` | `.art-intro`, `.art-section` 상하 여백 통일 |
+| `figure + .art-section__body` | `margin-top: var(--section-gap)` | 이미지 하단 → 본문 상단 여백 |
+| `.related-posts` bg | `var(--surface-gray-1)` | 연관 포스트 배경 (연한 회색) |
+| `.related-posts` 하단 | `padding-bottom: 160px` | 연관 포스트 하단 여백 고정 |
+
+## 캐러셀 버튼 동작 (JS)
+
+- 초기: 우측 버튼만 `.is-active` (진하게), 좌측 흐리게
+- 중간: 좌우 모두 `.is-active`
+- 마지막 슬라이드: 좌측만 `.is-active`, 우측 흐리게
+- 흐린 버튼 클릭 시 이동 없음 (선형 탐색, wrap 없음)
+- 화살표: SVG chevron `stroke-width="2.5"`
+
+## Inside Hugro Carousel (`.ihc`) — 2026-06-19
+
+기존 `floors-grid` (전체 너비 3열 그리드)를 제거하고 `article-col` 안 캐러셀로 교체.
+
+| 요소 | 클래스 | 설명 |
+|-----|--------|------|
+| 탭 버튼 | `.ihc__tabs` / `.ihc__tab` | B1·1F·2F 선택 탭, 이미지 위쪽 가운데 정렬, `.filter` 버튼과 동일 스타일 |
+| 스테이지 | `.ihc__stage` | `display:flex` — 이전화살표 + 이미지 + 다음화살표 |
+| 이미지 | `.ihc__img` | `aspect-ratio: 4/3` · `object-fit: cover` · opacity fade 전환 |
+| 화살표 | `.ihc__arrow--prev/next` | 이미지 바깥 양쪽, 원형 44px, border+shadow |
+| 정보 패널 | `.ihc__info` / `.is-active` | 이미지 아래 레벨·제목·설명 (JS로 is-active 토글) |
+
+JS: `ihcGoTo(idx)` — 탭·info is-active 토글, 이미지 opacity fade 후 src 교체
+
+## 제거된 border-top 목록
+
+| 요소 | 이유 |
+|---|---|
+| `#visit-info` | intro 직후 연결감 유지 |
+| `.floors-head` | Inside Hugro 진입 구분선 제거 |
+| `.location-section` | floors-grid → location 구분선 제거 |
 
 ## 스펙 대비 변경 사항
 
 - **Section 03 (The Hugro Philosophy — "Beauty Beyond Treatment")**: 미구현. 브랜드 철학 텍스트 섹션 생략됨.
-- **Section 08 (Related Content — 4열 카드 그리드)**: 미구현. 관련 서비스 추천 콘텐츠 미포함.
+- **앱 배너**: 스펙 외 추가. CTA 배너 다음, 연관 포스트 앞에 위치. 파란색(`#1400ff`) 배경, QR 코드 포함. 스토어 버튼 제거됨.
+- **연관 포스트 (Section 08)**: 4열 그리드, 1:1 썸네일 비율, `surface-gray-1` 배경. 스펙의 서비스 링크 대신 에디토리얼 포스트 카드로 구현.
 - **방문 상담 안내 Info Box**: 스펙에 없던 항목. DIVE 패턴(인트로 직후 노출)으로 추가됨. 장소·운영시간·전화·카카오·이메일 등 포함.
 - **Login Modal**: 스펙에 없던 항목. 로그인/회원가입 모달(이메일·비밀번호 입력폼) 구현됨.
 - **Hero 텍스트**: 스펙 Title `HUGRO CENTER` → 실제 구현 `프리미엄 뷰티 & 웰니스를 경험하다`.
+- **Hero 높이**: `100vh` 요청 후 `95vh`로 조정.
+
+## 웹 접근성 (2026-06-19)
+
+색상·폰트 제외. WCAG 2.1 AA 기준 보완 사항.
+
+| 구분 | 변경 내용 |
+|-----|---------|
+| **HTML 유효성** | `info-table`, `building-table`: `<div>` → `<dl>` (dt/dd는 dl 자식이어야 함) |
+| **캐러셀 도트** | `.treatment-carousel__dot`: `<div>` → `<button>` + `aria-label="슬라이드 N 보기"` + JS에서 `aria-current` 토글 |
+| **랜드마크** | `<main id="main-content">` 추가 (hero ~ app-banner 섹션 포함) |
+| **스킵 내비** | `<a class="skip-link" href="#main-content">본문으로 이동</a>` body 최상단 |
+| **GNB Overlay** | `role="dialog" aria-modal="true" aria-label="사이트 내비게이션" aria-hidden="true"` 추가; JS에서 열기/닫기 시 aria-hidden 토글 + 닫기 버튼 포커스 이동 |
+| **Hero 섹션** | `<section class="center-hero" aria-label="휴그로 센터 소개">` |
+| **GNB chevron** | `<svg class="gnb-chevron" aria-hidden="true">` (장식용 아이콘 숨김) |
+| **util-sep** | `<span class="util-sep" aria-hidden="true">` (시각적 구분자 숨김) |
+| **lang-select** | `lang-select__btn`에 `aria-expanded aria-haspopup="listbox"` 추가; JS 드롭다운 토글 로직 추가 |
 
 ---
 
