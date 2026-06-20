@@ -152,7 +152,7 @@ Reference Implementation
 
 - About_Page_Spec_v0.2.md — about.html 브랜드 방향·목적 정의
 - Center_Page_Spec.md — center.html 에디토리얼 경험 기사 스펙 (휴그로센터)
-- Personal_Skin_Sol_Page_Spec.md — skin-sol.html (퍼스널 스킨 솔루션) — 2026-06-19 작성
+- Personal_Skin_Sol_Page_Spec.md — skin-sol.html (나의 피부 솔루션 찾기) — 2026-06-19 작성
 
 ---
 
@@ -171,23 +171,49 @@ Reference Implementation
 - index.html (메인 페이지)
 - about.html (소개 페이지)
 - center.html (휴그로센터 페이지)
-- skin-sol.html (퍼스널 스킨 솔루션 페이지)
+- skin-sol.html (나의 피부 솔루션 찾기 페이지)
+- cosmetic.html (코스메틱 쇼핑 리스팅 페이지)
+- product.html (코스메틱 상품 상세 페이지 — cosmetic.html 카드 클릭 진입, sessionStorage 데이터 연동)
+- procedure.html (프리미엄 시술 페이지 — page-hero--navy)
+- travel.html (트래블 페이지 — page-hero--navy)
+- faq.html (FAQ 페이지 — page-hero--white)
+- skin-analysis.html (AI 피부 분석 페이지)
 
 **CSS** (`css/` 폴더 — 페이지별 분리)
 
+로드 순서: `reset.css` → `theme.css` → `common.css` → `css/components/*.css` → `[page].css`
+
 - css/reset.css (브라우저 정규화 — box-sizing, margin/padding, 기본 스타일)
-- css/theme.css (디자인 토큰 — Primitive + Semantic)
-- css/common.css (공통 레이아웃 — Header, Footer, GNB, Mobile Bar, Utilities)
+- css/theme.css (디자인 토큰 — Primitive + Semantic + Component + Navy Scale + Overlay + Breakpoint 참고값)
+- css/common.css (공통 레이아웃 — Header + 테마 모디파이어, Footer, GNB, Mobile Bar, `.page-hero`, `.cta-banner`, Utilities)
+
+`css/components/` (공통 컴포넌트 — common.css에서 분리)
+
+- css/components/button.css — `.btn*`, `.link-arrow`
+- css/components/accordion.css — `.acc*` (색상·구조·애니메이션 공통)
+- css/components/modal.css — `.login-modal*`, `.proc-sheet*`
+- css/components/card.css — `.prod-card*`
+- css/components/tab.css — `.tab-line*`, `.tab-pill*`
+
+페이지 전용 CSS:
+
 - css/home.css (Home / index.html 전용 스타일)
-- css/about.css (About 페이지 전용 스타일)
+- css/about.css (About 페이지 전용 스타일 — header--solid 사용)
 - css/center.css (Center 페이지 전용 스타일)
-- css/skin-sol.css (Personal Skin Solution 페이지 전용 스타일)
+- css/skin-sol.css (Personal Skin Solution 페이지 전용 스타일 — header--light 사용)
+- css/cosmetic.css (코스메틱 쇼핑 리스팅 페이지 전용 스타일 — header--light 사용)
+- css/product.css (코스메틱 상품 상세 페이지 전용 스타일 — header--solid 사용)
+- css/procedure.css (시술 페이지 전용 스타일 — page-hero--navy)
+- css/travel.css (트래블 페이지 전용 스타일 — page-hero--navy)
+- css/faq.css (FAQ 페이지 전용 스타일 — header--light, page-hero--white)
+- css/skin-analysis.css (AI 피부 분석 페이지 전용 스타일)
 
 **JS** (`js/` 폴더)
 
-- js/app.js (인터랙션)
+- js/app.js (인터랙션 — `applyLang()` 헬퍼로 언어 선택 로직 통합)
 - js/image-slot.js (커스텀 이미지 슬롯)
 - js/contact-popup.js (문의하기 플로팅 버튼 + 팝업 — 모든 페이지 공통 주입)
+- js/pss-state.js (Personal Skin Solution 퀴즈 상태 관리)
 
 현재 구현된 결과를 우선 기준으로 사용한다.
 
@@ -271,7 +297,7 @@ https://www.kmeditour.co.kr
 
 # 8. Personal Skin Solution Policy
 
-퍼스널 스킨 솔루션은 독립 서비스가 아니다.
+나의 피부 솔루션 찾기은 독립 서비스가 아니다.
 
 Beauty 카테고리 내부 서비스로 운영한다.
 

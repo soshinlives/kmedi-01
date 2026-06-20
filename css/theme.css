@@ -71,8 +71,6 @@
 
   /* ─── Primitive: Typography ─── */
 
-  --font-sans: Optima, Candara, "Pretendard", source-sans-pro, sans-serif;
-
   --text-10: 10px;
   --text-11: 11px;
   --text-12: 12.5px;
@@ -204,10 +202,63 @@
   --btn-kakao: var(--kakao-yellow);
   --btn-kakao-text: var(--kakao-dark);
 
+  /* ─── Navy Scale (page-hero--navy · skin-analysis hero 등) ─── */
+  --navy-900: #0d1321;   /* hero gradient 끝 */
+  --navy-800: #1a2038;   /* hero gradient 시작 */
+  --navy-700: #1e2535;   /* sa-page-hero 배경 */
+  --navy-600: #162032;   /* gnb mobile contact 배경 */
+
+  /* ─── Background: warm neutral ─── */
+  --bg-warm: #f6f6f4;    /* procedure · travel · skin-analysis 콘텐츠 영역 배경 */
+
+  /* ─── Semantic: Overlay ─── */
+  --overlay-bg: rgba(0, 0, 0, 0.55);
+  --overlay-50: rgba(0, 0, 0, 0.50);
+  --overlay-60: rgba(0, 0, 0, 0.60);
+  --overlay-80: rgba(0, 0, 0, 0.80);
+
+  /* ─── Cosmetic Page — Component Tokens ─── */
+  /* 네이비: 배지·버튼·chip 배경에 사용되는 코스메틱 페이지 브랜드 컬러 */
+  --cosm-navy: #1a1a6e;
+  /* 배지 */
+  --cosm-badge-gift: #ff6b35;
+  --cosm-badge-buyers-bg: rgba(0, 0, 0, 0.58);
+  /* 카드 인터랙션 */
+  --cosm-card-hover: rgba(26, 26, 110, 0.07);
+  --cosm-card-hover-shadow: 0 0 0 14px rgba(26, 26, 110, 0.07);
+  /* 액션 바 */
+  --cosm-action-bar-bg: rgba(0, 0, 0, 0.82);
+  --cosm-btn-on-dark-hover: rgba(255, 255, 255, 0.12);
+  /* 배송 칩 */
+  --cosm-chip-day-bg: #00695c;
+  /* 멤버십 포인트 */
+  --cosm-membership-bg: #e8f5e9;
+  --cosm-membership-text: #2e7d32;
+  /* 가격 */
+  --cosm-discount: #e53935;
+  /* 좋아요 활성 */
+  --cosm-like-active: #ff6b6b;
+
+  /* ─── Responsive Type Scale ─── */
+  /* 제목·본문 계열에만 적용. UI 요소(버튼·레이블·칩)는 기존 --text-*px 유지 */
+
+  --type-h2: clamp(28px, 3.5vw, 52px);           /* 섹션 서브 제목 */
+  --type-h3: clamp(20px, 2.2vw, 30px);           /* 카드 대제목, hero 서브타이틀 */
+  --type-h4: clamp(18px, 1.8vw, 24px);           /* 카드 소제목, CTA desc */
+  --type-h5: clamp(16px, 1.5vw, 20px);           /* step 레이블, icon 레이블 */
+  --type-body-lg: clamp(16px, calc(15px + 0.4vw), 18px); /* 리드 본문 */
+  --type-body: clamp(15px, calc(14.5px + 0.25vw), 17px); /* 일반 본문 */
+
   /* ─── Layout ─── */
 
-  --maxw: 1920px;
+  --maxw: 2560px;
   --maxw-02: 1000px;
   --gutter: var(--space-gutter);
   --header-h: 92px;
+
+  /* ─── Breakpoints (reference only — CSS @media does not support var()) ─── */
+  /* JS usage: window.matchMedia("(max-width: 860px)").matches              */
+  --bp-mobile: 860;   /* 모바일 GNB / 컴포넌트 레이아웃 전환 */
+  --bp-small:  600;   /* 소형 모바일 서체·여백 추가 압축 */
+  --bp-treat:  520;   /* treat-grid 2열 전환 */
 }

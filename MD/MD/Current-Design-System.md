@@ -4,7 +4,7 @@
 
 현재 개발 완료된 메인 페이지를 기준으로 현행 디자인 시스템 토큰을 정리한 문서입니다.
 
-분석 대상: `index.html`, `css/reset.css`, `css/theme.css`, `css/common.css`, `css/home.css`, `css/about.css`, `css/center.css`, `skin-sol.html`, `css/skin-sol.css`
+분석 대상: `index.html`, `css/reset.css`, `css/theme.css`, `css/common.css`, `css/home.css`, `css/about.css`, `css/center.css`, `skin-sol.html`, `css/skin-sol.css`, `cosmetic.html`, `css/cosmetic.css`, `product.html`, `css/product.css`
 
 ---
 
@@ -27,7 +27,19 @@ Primitive Token  →  Semantic Token  →  Component Usage
 ```
 
 - 현행 팔레트: **Gray · Brown · Violet · Amber · Gold · Teal · Social(Kakao)**
-- CSS 파일 구조: `reset.css` (browser reset) → `theme.css` (tokens) → `common.css` (shared) → `[page].css` (page-specific)
+- CSS 파일 구조: `reset.css` → `theme.css` → `common.css` → `css/components/*.css` → `[page].css`
+
+### CSS Components 파일 (`css/components/`)
+
+common.css에서 분리된 재사용 컴포넌트. 모든 HTML 파일이 공통 import.
+
+| 파일 | 포함 클래스 | 설명 |
+|------|-----------|------|
+| `button.css` | `.btn`, `.btn--primary`, `.btn--primary2`, `.btn--solid`, `.link-arrow` | 버튼 + 텍스트 링크 |
+| `accordion.css` | `.acc`, `.acc-item`, `.acc-head`, `.acc-body`, `.acc-icon` | 아코디언 공통 (색상·구조·애니메이션) |
+| `modal.css` | `.login-modal*`, `.proc-sheet*` | 로그인 모달 + 시술 시트 |
+| `card.css` | `.prod-card*`, `.prod-img-tag` | 상품 카드 공통 (cosmetic/product/skin-sol) |
+| `tab.css` | `.tab-line*`, `.tab-pill*` | 탭 컴포넌트 2종 (밑줄형/알약형) |
 
 ---
 
@@ -53,6 +65,7 @@ Primitive Token  →  Semantic Token  →  Component Usage
 | `--bg-white`   | `--white`    | #ffffff      | body, header, card, footer, gnb-overlay  | 35     |
 | `--bg-gray`    | `--gray-150` | #e4e6ec      | accordion item 배경                      | 1      |
 | `--bg-dark`    | `--gray-950` | #101219      | trust section, gnb-banner, top-btn hover | 16     |
+| `--bg-warm`    | —            | #f6f6f4      | procedure · travel · skin-analysis 콘텐츠 배경 (따뜻한 오프화이트) | — |
 
 ### 5.2 Surface
 
@@ -110,6 +123,24 @@ gray-1~4: 밝은(gray-200) → 어두운(gray-800) 순
 | `--accent-gradient` | violet-900→500 | gradient     | cta-dark 섹션 전체 배경                                          | 1      |
 
 > `--text-caption`과 `--accent-blue1`는 동일값(violet-500).
+
+### 5.6b Navy Scale (신규 — page-hero--navy · skin-analysis hero 전용)
+
+| Semantic Token | Actual Value | Usage |
+|----------------|-------------|-------|
+| `--navy-900` | #0d1321 | page-hero--navy gradient 끝 (어두운 끝) |
+| `--navy-800` | #1a2038 | page-hero--navy gradient 시작 |
+| `--navy-700` | #1e2535 | sa-page-hero 배경 (skin-analysis) |
+| `--navy-600` | #162032 | gnb mobile contact 배경 (예비) |
+
+### 5.6c Overlay Scale (신규)
+
+| Semantic Token | Actual Value | Usage |
+|----------------|-------------|-------|
+| `--overlay-bg` | rgba(0,0,0,.55) | 기존 hero 이미지 오버레이 |
+| `--overlay-50` | rgba(0,0,0,.50) | — (예비) |
+| `--overlay-60` | rgba(0,0,0,.60) | — (예비) |
+| `--overlay-80` | rgba(0,0,0,.80) | — (예비) |
 
 ### 5.7 Social Login
 
@@ -247,11 +278,76 @@ Kakao 소셜 로그인 전용. 사이트 브랜드 컬러 아님.
 
 ### 8.1 Header
 
-| 상태              | 사용 토큰                                        |
-| ----------------- | ------------------------------------------------ |
-| 투명 (스크롤 전)  | `--text-white`                                   |
-| Solid (스크롤 후) | `--bg-white`, `--text-gray-6`, `--border-gray-1` |
-| 모바일 헤더       | `--bg-white`, `--text-gray-7`                    |
+공통 헤더 로직은 `common.css`에서 관리. 페이지별로 `<header>` 태그에 BEM 모디파이어를 추가하여 테마를 결정한다.
+
+#### Header Modifier Classes
+
+| 클래스 | 투명 상태 | 스크롤 후(is-solid) | 적용 페이지 |
+|--------|----------|---------------------|-------------|
+| (없음, 기본) | transparent + white text | bg: white, color: gray | index (홈) |
+| `.header--light` | transparent + dark text | 동일 유지 (변화 없음) | cosmetic · faq · skin-sol |
+| `.header--solid` | white + dark text + shadow | 동일 유지 | about · product |
+
+#### Header State Classes (JS 토글)
+
+| 상태              | 클래스 | 사용 토큰 |
+| ----------------- | ---------- | ------------------------------------------------ |
+| 투명 (스크롤 전)  | 기본값 | `--text-white` |
+| Solid (스크롤 후) | `.is-solid` | `--bg-white`, `--text-gray-6`, `--border-gray-1` |
+| 숨김 (스크롤 다운) | `.is-hidden` | `transform: translateY(-100%)` |
+| 모바일 헤더       | — | `--bg-white`, `--text-gray-7` |
+
+### 8.1b Page Hero Component — `.page-hero`
+
+공통 페이지 히어로. `common.css` `.page-hero` 베이스 + BEM 모디파이어 2벌로 관리. 한 곳 수정 → 전 페이지 반영.
+
+| 요소 | 클래스 | 설명 |
+|------|--------|------|
+| 베이스 | `.page-hero` | padding (header-h + 100px / 64px mobile), text-align center |
+| 흰색 배경 | `.page-hero--white` | bg: `--bg-white` · border-bottom · eyebrow/title/sub: gray 계열 |
+| 네이비 배경 | `.page-hero--navy` | bg: gradient `--navy-800` → `--navy-900` + radial 오버레이 · eyebrow/title/sub: white 계열 |
+
+| 자식 요소 | 토큰 | 값 |
+|----------|------|----|
+| `.eyebrow` | `--text-12` · `--tracking-wider` · uppercase | white: `--text-caption`, navy: rgba(255,255,255,.38) |
+| `.page-hero__title` | `--text-80` → clamp(40px,10vw,56px) mobile | white: `#fff`, white-ver: `--text-gray-6` |
+| `.page-hero__sub` | `--text-15` / `--text-14` mobile | white: rgba(255,255,255,.58), white-ver: `--text-gray-3` |
+
+```html
+<!-- 흰 배경 히어로 -->
+<section class="page-hero page-hero--white">
+  <div class="wrap">
+    <p class="eyebrow">CATEGORY</p>
+    <h1 class="page-hero__title">페이지 제목</h1>
+    <p class="page-hero__sub">페이지 설명</p>
+  </div>
+</section>
+
+<!-- 네이비 배경 히어로 -->
+<section class="page-hero page-hero--navy">
+  <div class="wrap">
+    <p class="eyebrow">CATEGORY</p>
+    <h1 class="page-hero__title">페이지 제목</h1>
+    <p class="page-hero__sub">페이지 설명</p>
+  </div>
+</section>
+```
+
+**적용 페이지:**
+- `--white`: cosmetic · faq · skin-sol
+- `--navy`: procedure · travel
+
+### 8.1c CTA Banner Component — `.cta-banner`
+
+다크 배경 풀-위드 CTA 바. `common.css`로 이동 (구 center.css에만 존재). 여러 페이지 공유 가능.
+
+| 요소 | 토큰/값 |
+|------|---------|
+| `.cta-banner` | bg: `--bg-dark` · flex justify-between · padding clamp(36–56px) |
+| `.cta-banner__label` | `--text-12` · rgba(255,255,255,.38) · letter-spacing .06em |
+| `.cta-banner__title` | clamp(16–22px) · font-weight 600 · rgba(255,255,255,.9) |
+| `.cta-banner__btn` | bg: `--bg-white` · color: `--bg-dark` · padding 14px 28px · radius 2px |
+| 모바일 (≤600px) | flex-direction: column · btn width 100% |
 
 ### 8.2 Navigation (GNB)
 
@@ -280,23 +376,79 @@ Kakao 소셜 로그인 전용. 사이트 브랜드 컬러 아님.
 
 ### 8.3 Buttons
 
-| 버튼                            | 배경              | 텍스트          | 호버                |
-| ------------------------------- | ----------------- | --------------- | ------------------- |
-| `.btn--solid` / `.btn--primary` | `--btn-primary`   | `--bg-white`    | 유지                |
-| `.btn--primary:hover`           | `--btn-secondary` | `--text-white`  | —                   |
-| `.btn--primary2`                | `--accent-blue2`  | `--bg-white`    | `--accent-blue3`    |
-| outline                         | transparent       | `--text-gray-6` | bg: `--text-gray-6` |
+버튼은 역할별 6개 카테고리로 관리한다. **design-system.html** "Button" 섹션에 모두 프리뷰 포함.
 
-### 8.4 Services Accordion (`.acc`)
+#### 1. Base Actions — `.btn` family (`common.css`)
 
-home.css `#services` 섹션의 뷰티/메디컬/트래블 서비스 아코디언. (구 why-us 아코디언 `.why-acc`는 제거됨)
+| 클래스 | 배경 | 텍스트 | 호버 | h/radius | 사용처 |
+|--------|------|--------|------|----------|--------|
+| `.btn--primary` / `.btn--solid` | `--btn-primary`(gray-950) | `--bg-white` | 유지 | 54px / none | 메인 CTA 전반 |
+| `.btn--primary2` | `--accent-blue2`(violet-700) | `--bg-white` | `--accent-blue3` | 54px / none | 서브 CTA (헤더, GNB) |
+| `.btn` (outline) | transparent | `--text-gray-6` | bg: `--text-gray-6`, color: white | 54px / none | 보조 액션 |
 
-| 요소      | 사용 토큰                        |
-| --------- | -------------------------------- |
-| 기본 배경 | `--bg-gray`                      |
-| 헤더      | `--bg-white`, `--text-gray-6`    |
-| 열림 헤더 | `--accent-blue2`, `--text-white` |
-| 아이콘    | `--accent-blue1`                 |
+#### 2. On-Dark Buttons (어두운 배경 전용)
+
+| 클래스 | 배경 | 텍스트 | 호버 | 사용처 |
+|--------|------|--------|------|--------|
+| `.cta-banner__btn` | `--bg-white` | `--bg-dark` | rgba(255,255,255,.88) | CTA Banner 섹션 (`common.css`) |
+| `.faq-cta__btn` | `#fff` | `--accent-blue2` | outline(투명 bg, white text) | FAQ CTA 다크 섹션 |
+| `.proc-hero__cta` | none (텍스트) | rgba(255,255,255,.55) | → .9 | Hero scroll prompt (다운 화살표) |
+
+#### 3. Filter Chip — `.ds-chip` / `proc-filter__btn` style
+
+| 상태 | 배경 | 텍스트 | 사용처 |
+|------|------|--------|--------|
+| active | `--btn-primary` | white | home, procedure, travel, cosmetic 필터 |
+| idle | transparent | `--text-gray-4` | border: `--border-gray-4` |
+
+#### 4. Tab Navigation — 3가지 패턴
+
+| 클래스 | 패턴 | active 스타일 | 사용처 |
+|--------|------|---------------|--------|
+| `.tv-tab-btn` | 밑줄 탭 (scaleX) | color+underline: `--accent-blue1` | travel |
+| `.proc-filter__btn` | 밑줄 탭 (border-bottom) | border-bottom: `--text-gray-6` | procedure 필터바 |
+| `.sa-tab-btn` | Pill 탭 (radius: 100px) | bg: `#c8694c`(terracotta) | skin-analysis |
+
+#### 5. Icon / Circular Buttons
+
+| 클래스 | 크기 | 스타일 | 사용처 |
+|--------|------|--------|--------|
+| `.cosm-hbtn` | 36px | white bg + shadow | cosmetic 카드 action bar (좋아요/장바구니/공유) |
+| `.treatment-carousel__btn` | 44px | white bg + border + shadow | center 캐러셀 화살표 |
+| `.pd-gallery__arrow` | 44px | 동일 패턴 | product 갤러리 화살표 |
+
+#### 6. State-Driven & Utility
+
+| 클래스 | 기반 | 상태 | 사용처 |
+|--------|------|------|--------|
+| `.pss-analyze__btn` | `.btn--primary` 확장 | disabled(opacity .35) → is-ready(1) | skin-sol 퀴즈 분석 시작 |
+| `.pss-reset__btn` | 텍스트 링크형 | 아이콘+레이블, color: `--text-gray-3` | 퀴즈 초기화 |
+| `.pd-back-btn` | 텍스트 링크형 | 동일 패턴 | product 뒤로 가기 |
+
+### 8.4 Accordion Component (`.acc`)
+
+**base**: `common.css` — 색상·구조·애니메이션 전체 정의.  
+**override**: `home.css` (Services 섹션) · `faq.css` (.faq-body) — 크기·간격·보더만 재정의.
+
+| 요소      | 사용 토큰                        | 파일 |
+| --------- | -------------------------------- | ---- |
+| 기본 배경 | `--bg-gray`                      | common.css |
+| 헤더      | `--bg-white`, `--text-gray-6`    | common.css |
+| 열림 헤더 | `--accent-blue2`, `--text-white` | common.css |
+| 아이콘    | `--accent-blue1`                 | common.css |
+| Home 크기 | font-size clamp(18–22px), padding 24px 30px, max-width 720px | home.css |
+| FAQ 크기  | font-size 17px, padding 20px 24px, border 1px solid `--border-gray-1` | faq.css |
+| FAQ body  | `--surface-gray-1` 배경 + `--border-gray-1` 상단 구분선 | faq.css |
+
+```html
+<!-- 아코디언 HTML 구조 -->
+<div class="acc">
+  <div class="acc-item is-open">
+    <button class="acc-head">제목 <span class="acc-icon"></span></button>
+    <div class="acc-body"><div class="acc-body__inner">내용</div></div>
+  </div>
+</div>
+```
 
 ### 8.5 Why Journey 5-col Grid (`.why-journey`)
 
@@ -399,9 +551,85 @@ common.css에 정의. 키보드 사용자가 내비게이션을 건너뛰고 본
 
 ---
 
+### 8.11 Cosmetic Page (`cosmetic.css`)
+
+쇼핑 리스팅 페이지. 카테고리 필터 + 정렬 기반 상품 그리드.
+
+| 클래스 | 주요 토큰 | 설명 |
+|--------|-----------|------|
+| `.cosm-hero` | `--header-h`, `--bg-white`, `--border-gray-1` | 페이지 상단 히어로 (제목 · 부제) |
+| `.cosm-shop` | `--surface-gray-1` | 상품 목록 영역 배경 |
+| `.cosm-select-btn` | `--bg-white`, `--border-gray-1`, `--text-gray-6`, `--text-caption` | 커스텀 드롭다운 버튼 |
+| `.cosm-select-dropdown` | `--bg-white`, `--border-gray-1`, `--text-caption` | 드롭다운 목록 |
+| `.cosm-card__img-wrap` | `--surface-gray-1`, `--radius-*` | 상품 이미지 래퍼 (aspect-ratio 3/4) |
+| `.cosm-tag--0/1` | `--accent-blue1`, `--accent-blue3` | 원형 뱃지 — semantic 적용 |
+| `.cosm-tag--2` | `--gray-800` (직접) | 원형 뱃지 — dark gray 전용 |
+| `.cosm-tag--3` | `--teal-500` (직접) | 원형 뱃지 — teal 전용 |
+| `.cosm-tag--4` | `#b0527a` (하드코딩) | 원형 뱃지 — 로즈베리 전용 |
+| `.cosm-tag--5` | `--amber-500` (직접) | 원형 뱃지 — amber 전용 |
+| `.cosm-card__rating` | `--rating` | 별점 색상 |
+
+**헤더 고정 처리 (cosmetic 전용)**: `cosmetic.css`에서 `.header`를 처음부터 solid 상태로 오버라이드. JS의 `is-solid` 토글 없이 항상 흰 배경 유지.
+
+**컴포넌트 토큰 (`--cosm-*`)**: `theme.css :root`에 정의, `cosmetic.css`와 `product.css`가 공유.
+
+| 토큰 | 값 | 용도 |
+|------|---|-----|
+| `--cosm-navy` | #1a1a6e | 배송칩(새벽), 배지 배경, 결과 태그 |
+| `--cosm-badge-gift` | #ff6b35 | '사은품' 배지 |
+| `--cosm-badge-buyers-bg` | rgba(0,0,0,0.58) | 구매자 수 뱃지 bg (현재 미사용) |
+| `--cosm-card-hover` | rgba(26,26,110,0.07) | 카드 호버 배경 |
+| `--cosm-card-hover-shadow` | 0 0 0 14px … | 카드 호버 외부 확장 shadow |
+| `--cosm-action-bar-bg` | rgba(0,0,0,0.82) | 카드 액션바 배경 |
+| `--cosm-btn-on-dark-hover` | rgba(255,255,255,0.12) | 다크 bg 위 버튼 호버 |
+| `--cosm-chip-day-bg` | #00695c | 배송칩(주간) 배경 |
+| `--cosm-membership-bg` | #e8f5e9 | 멤버십 포인트 bg |
+| `--cosm-membership-text` | #2e7d32 | 멤버십 포인트 text |
+| `--cosm-discount` | #e53935 | 할인율 강조색 |
+| `--cosm-like-active` | #ff6b6b | 좋아요 활성 색상 |
+
+---
+
+### 8.12 Product Detail Page (`product.css`)
+
+상품 상세 페이지. `cosmetic.html` 카드 클릭 → `sessionStorage` → `product.html` 렌더.
+
+| 클래스 | 주요 토큰 | 설명 |
+|--------|-----------|------|
+| `.pd-page` | `--surface-gray-1` | 전체 페이지 배경 |
+| `.pd-main` | `--bg-white` | 이미지+정보 2컬럼 섹션 |
+| `.pd-gallery__main` | `--surface-gray-1` | 1:1 이미지 컨테이너 |
+| `.pd-gallery__arrow` | `--shadow-btn`, `--text-gray-6` | 갤러리 이전/다음 버튼 (원형) |
+| `.pd-gallery__tag` | `--text-caption`, `--accent-blue2` | 이미지 위 원형 태그 뱃지 |
+| `.pd-category-tag` | `--text-caption` | 카테고리 pill 레이블 |
+| `.pd-title` | `--text-gray-7` | 상품명 H1 |
+| `.pd-rating-stars` | `--rating` | 별점 색상 |
+| `.pd-option-item.is-selected` | `--text-caption` | 선택된 옵션 보더 + 점 |
+| `.pd-discount` | `--cosm-discount` | 할인율 (cosm 토큰 공유) |
+| `.pd-price` | `--text-gray-7` | 최종 가격 |
+| `.pd-desc` | `--text-gray-3`, `--border-gray-1` | 설명 + 하단 구분선 |
+| `.pd-qty` | `--border-gray-1` | 수량 조절 박스 |
+| `.pd-btn--cart` | `--text-gray-7` (bg), `--text-white` | 장바구니 버튼 |
+| `.pd-btn--buy` | `--border-gray-1` | 바로 구매 아웃라인 버튼 |
+| `.pd-delivery__chip--dawn` | `--cosm-navy` | 새벽배송 칩 (cosm 토큰 공유) |
+| `.pd-delivery__chip--day` | `--cosm-chip-day-bg` | 주간배송 칩 (cosm 토큰 공유) |
+| `.pd-specs-card` | `--bg-white`, `--border-gray-1` | 상품정보 스펙 테이블 카드 |
+| `.pd-detail-hero` | `--accent-gradient` | 상세 설명 히어로 배너 |
+| `.pd-detail-features` | `--surface-gray-1`, `--border-gray-1` | 주요 효능 pill 목록 |
+| `.pd-feat-icon` | `--text-caption` | 효능 아이콘 (✦) |
+| `.pd-detail-howto__steps li::before` | `--text-caption` | 사용법 스텝 번호 원형 |
+
+**헤더 처리**: `product.css`에서 `.header`를 solid 오버라이드 + `is-hidden` 스크롤 숨김 (cosmetic과 동일 패턴).
+
+**하드코딩 허용값**: `rgba(255,255,255,0.9)` 갤러리 화살표 bg, `rgba(0,0,0,0.5)` 갤러리 카운터 bg — 투명도 변형값으로 토큰화 불필요.
+
+---
+
 ## 9. Direct Primitive Usage (의도적)
 
-semantic token 없이 primitive를 직접 참조하는 항목.
+semantic token 없이 CSS 파일에서 primitive를 직접 참조하는 항목.
+
+semantic token 없이 CSS 파일에서 primitive를 직접 참조하는 항목.
 
 | Primitive      | 파일                  | 위치                                              | 사유                                           |
 | -------------- | --------------------- | ------------------------------------------------- | ---------------------------------------------- |
@@ -420,6 +648,12 @@ semantic token 없이 primitive를 직접 참조하는 항목.
 | `--amber-600`  | skin-sol.css | 결과 배지 bg                                      | `--text-caption2`와 동일값, 배지 bg 전용       |
 | `--teal-50`    | common.css            | `.contact-popup__icon--phone` bg                  | 전화 아이콘 민트 배경 — 단일 사용처, semantic 미배정 |
 | `--teal-500`   | common.css            | `.contact-popup__icon--phone` color               | 전화 아이콘 민트 색상 — 단일 사용처, semantic 미배정 |
+| `--gray-800`   | cosmetic.css          | `.cosm-tag--2` background                         | 원형 태그 dark gray — 태그 전용 색상, semantic 미배정 |
+| `--teal-500`   | cosmetic.css          | `.cosm-tag--3` background                         | 원형 태그 teal — 태그 전용 색상, semantic 미배정 |
+| `--amber-500`  | cosmetic.css          | `.cosm-tag--5` background                         | 원형 태그 amber — 태그 전용 색상, semantic 미배정 |
+| `--violet-400` | procedure.css         | `.proc-filter` 입력창 focus, 정렬 버튼 hover border | midtone violet — semantic 미배정 (violet-400 ≠ accent-blue1) |
+| `--violet-400` | travel.css            | `.tv-search__input` focus, `.tv-sort__btn` hover border | 동일 — semantic 미배정 |
+| `--violet-50`  | travel.css            | `.tv-card__tag` bg, `.tv-detail__cat-tag` bg      | 카드 태그 배지 연보라 배경 — semantic 미배정 |
 
 ---
 
@@ -436,6 +670,7 @@ semantic token 없이 primitive를 직접 참조하는 항목.
 | `rgba(255,255,255,0.65)`       | skin-sol.css `.pss-hero__desc`          | 다크 hero 위 반투명 텍스트 |
 | `rgba(59,51,217,0.08~0.2)`     | skin-sol.css option hover, step active  | focus ring shadow (투명도 변형) |
 | 하드코딩 배지 hex (`#e8eafb` 등) | skin-sol.css `.pss-icon--*`             | 피부 결과 배지 12종 개별 색상 — 의미적 고유값 |
+| `#b0527a`                        | cosmetic.css `.cosm-tag--4`             | 로즈베리 태그 배경 — 6색 순환 중 unique 색상 |
 
 ---
 
@@ -523,6 +758,48 @@ semantic token 없이 primitive를 직접 참조하는 항목.
 
 **변경 이력:**
 
+- **2026-06-21 (모바일 최적화 · CSS 정리 · 컴포넌트 구조 확립 · design-system.html 수정)**:
+  - **home.css 모바일 최적화 (전반)**:
+    - `@media (max-width: 860px)` — `.hero__title: clamp(22px,5.5vw,26px)` / `.h-lg: clamp(20px,5.5vw,24px)` / `.cta-dark {padding:48px 0}` / `.cta-dark__title: clamp(26px,5vw,36px)` / `.cta-dark__desc: var(--text-15)` / `.hiw-card {padding:16px 0; grid-template-columns:36px 1fr}` / `.hiw-card__step {font-size:var(--text-18); font-weight:400}` / `.sec-head margin-bottom: var(--space-20)`
+    - `@media (max-width: 860px)` — `.stay-card {padding:24px; min-height:360px}` / `.stay-card__tags {background:transparent}` (파란색 배경 제거)
+    - `@media (max-width: 760px)` — `.why-journey__icon-item {padding:24px 20px}` / icon-wrap 60×60px / SVG 28px / label/sub/desc 폰트/여백 축소
+    - `@media (max-width: 600px)` — `.news-card__title -webkit-line-clamp:2` / `.news-card__meta margin-top:10px` / `.news-card__cat font-size:12px` / `.acc-head font-size:17px` / `.cta-dark__title clamp(22px,6vw,28px)` / `.cta-dark__desc var(--text-14) font-weight:500`
+  - **CSS cascade 버그 수정**: `@media (max-width: 1080px)` 블록이 `@media (max-width: 600px)` 블록 뒤에 위치해 600px 규칙을 덮어쓰던 버그 수정 (1080px 블록을 600px 블록 앞으로 이동)
+  - **CSS 중복 제거**:
+    - `@media (max-width: 860px) { .feature__caption }` 독립 블록 → 기존 860px 블록 내 중복이므로 삭제
+    - 860px 블록 내 `cta-dark__desc { font-size: 17px }` → 같은 블록 내 `var(--text-15)` 규칙에 덮어쓰이던 중복 제거, `margin-bottom:0` 후속 규칙에 병합
+    - 600px 블록 내 `follow-grid 2열` / `footer__mid 1fr` / `news-grid nth-child(n+3) none` 삭제 (상위 미디어쿼리에 이미 존재)
+  - **common.css**: `tab.css` 분리 항목 주석 추가 (button/accordion/modal/card에 누락)
+  - **app.js**: `window.innerWidth <= 860` → `window.matchMedia("(max-width: 860px)").matches` 교체 (`isMobile()` 헬퍼 추출)
+  - **theme.css**: `--bp-mobile: 860` / `--bp-small: 600` / `--bp-treat: 520` 브레이크포인트 문서화 토큰 추가 (CSS @media에서 직접 사용 불가 — JS matchMedia 참고용)
+  - **design-system.html**:
+    - `<script src="js/contact-popup.js">` 제거 (CSS 없이 SVG가 전화면 렌더링되는 버그 수정)
+    - Architecture 탭 파일 구조 다이어그램: `site-0618-blue/` → `site-0619-blue_v0.3/` 교정, `css/components/` 하위 5개 파일 추가, 전체 HTML 파일 목록 및 JS 파일 설명 갱신
+  - **Section 3 (Token Architecture)**: CSS Components 파일 표 신설
+
+- **2026-06-21 (CSS 토큰 링크 정리 · 아코디언 컴포넌트화 · 디자인시스템 업데이트)**:
+  - **procedure.css · travel.css 전면 토큰 교체**: 모든 primitive 직접 참조(--gray-*, --violet-500, #fff, #f6f6f4 등) → semantic token으로 교체. 예외: `--violet-400` (semantic 미배정, focus/hover border 전용) · `--violet-50` (travel.css 카드 태그 배지 배경, semantic 미배정) — Section 9에 추가.
+  - **Accordion 컴포넌트화**: `home.css` + `faq.css`에 중복 존재하던 `.acc` 전체 정의를 `common.css`로 통합. 각 파일은 크기·간격·보더 override만 유지. `faq.css` hardcoded `#fafbfe` → `var(--surface-gray-1)` 교체.
+  - **Section 8.4**: 아코디언 항목을 "공통 base + 페이지 override" 구조로 전면 재작성. HTML 스니펫 추가.
+  - **Section 9**: procedure.css `--violet-400` 1건, travel.css `--violet-400` + `--violet-50` 2건 추가 → 총 21건.
+  - **design-system.html**: "Button Class Index" 전체 클래스 레퍼런스 테이블 추가. "Accordion" 컴포넌트 섹션 신설 (Home variant + FAQ variant 프리뷰 포함).
+
+- **2026-06-20 (CSS/JS 아키텍처 정리 · 버튼 컴포넌트 카탈로그)**:
+  - **theme.css**: `--navy-800/900/700/600`, `--bg-warm`, `--overlay-50/60/80` 추가 (Section 5.6b, 5.6c 신설)
+  - **common.css**: `.header.is-hidden` 추가(기존 누락). `.header--light` / `.header--solid` 모디파이어 신설 (Section 8.1 개편). `.cta-banner` 컴포넌트를 center.css → common.css로 이동 (Section 8.1c 신설). `page-hero--navy`에서 하드코딩 색상 → `--navy-800/900`으로 교체.
+  - **page CSS 5개** (cosmetic/faq/skin-sol/about/product): 중복 header 블록 전체 제거. `.header` 직접 오버라이드 → HTML `class="header header--light/solid"` 패턴으로 교체.
+  - **skin-analysis.css**: `#1e2535` → `--navy-700`, `#0d0f18` → `--navy-900`.
+  - **HTML 5개**: cosmetic/faq/skin-sol → `header--light`, about/product → `header--solid`.
+  - **app.js**: `applyLang(code, flagImg)` 헬퍼 추출 — 3곳 중복 언어 선택 로직을 헬퍼 호출로 통합.
+  - **design-system.html**: Button 섹션을 6개 카테고리로 전면 재편 (Base Actions · On-Dark · Filter Chip · Tab Navigation · Icon Circular · State-Driven).
+  - **Section 8.1**: Header Modifier Classes 표 추가.
+  - **Section 8.1b**: `.page-hero` 컴포넌트 신설 (--white/--navy 2벌 관리 패턴).
+  - **Section 8.1c**: `.cta-banner` 컴포넌트 신설.
+  - **Section 8.3**: Buttons 6개 카테고리 전면 재작성.
+  - **Section 5.1 Background**: `--bg-warm` 추가.
+  - **분석 대상 확장**: procedure.html · travel.html · faq.html · skin-analysis.html 추가.
+- **2026-06-20 (Product 상세 페이지 신규 · CSS 변수 정리)**: `product.html` + `css/product.css` 추가. 분석 대상 확장. `product.css` 하드코딩 `#e53935` → `--cosm-discount`, `#1a1a6e` → `--cosm-navy`, `#00695c` → `--cosm-chip-day-bg` 교체 (기존 cosm 컴포넌트 토큰 공유). Section 8.11 `--cosm-*` 토큰 테이블 신설. Section 8.12 Product Detail Page 컴포넌트 표 신설. Section 10 Hard-coded: product.css rgba 2건 추가. MASTER_CONTEXT.md `product.html` + `css/product.css` 추가. Excel IA에 상품 상세 항목 추가.
+- **2026-06-19 (Cosmetic 페이지 신규 · CSS 토큰 정리)**: `cosmetic.html` + `css/cosmetic.css` 추가. 분석 대상 확장. skin-sol 리네임 완료. GNB 쇼핑/하이라이트 → cosmetic.html 연결, gnb-link--utility 노란색 제거. `common.css` footer `border-top: 1px solid --border-gray-1` 추가 (전 페이지 공통). Section 8.11 Cosmetic Page 컴포넌트 표 신설. Section 9 Direct Primitive: `--gray-800`, `--teal-500`, `--amber-500` cosmetic.css 태그 전용 3건 추가 → **총 18건**. Section 10 Hard-coded Values: `#b0527a` 추가. cosmetic.css 태그에서 `--violet-500` → `--accent-blue1`, `--violet-800` → `--accent-blue3` semantic 교체.
 - **2026-06-19 (Contact Popup · GNB 정리 · CSS 연결 보완)**: `js/contact-popup.js` 신규 (모든 페이지 플로팅 문의 버튼 + 팝업 공통 주입). GNB 소개 항목 변경: "KMEDITOUR" → "회사소개", "서비스 이용방법"·"문의하기" 삭제, "자주묻는질문" → "FAQ", 상단 유틸 바 화살표 제거. `common.css`: `.chat-btn.is-open` `--violet-600`→`--btn-secondary`, `.chat-btn.is-open:hover` `--violet-800`→`--accent-blue3`, `.contact-popup__close:hover` `--gray-900`→`--text-gray-6` (primitive 직접 참조 3건 semantic으로 교체). Palette에 **Teal** 추가 (`--teal-50`, `--teal-500`) — contact popup 전화 아이콘 전용. Section 6.6 Teal Scale 신설. Section 8.9 Contact Popup 컴포넌트 표 신설. Section 9 Direct Primitive: `--violet-50` (common.css 이메일 아이콘), `--teal-50/500` (common.css 전화 아이콘) 3건 추가 → **총 15건**. MASTER_CONTEXT JS 파일 목록에 `contact-popup.js` 추가.
 - **2026-06-19 (Personal Skin Solution 페이지 신규)**: `skin-sol.html` + `css/skin-sol.css` 추가. 분석 대상 확장. Section 9 Direct Primitive: `--violet-50/100/300/500/600`, `--amber-400/500/600` skin-sol.css 전용 항목 추가 (배지·hover·step active bg/color, semantic 미배정). Section 10 Hard-coded Values: 히어로 반투명 white, focus ring rgba, 결과 배지 hex 12종 추가.
 - **2026-06-19 (--text-caption2 신규 토큰)**: theme.css — `--text-caption2: var(--gold-600)` (#9b7943, 브론즈 골드) 추가. center.css `.ihc__level`에 적용 (플로어 레이블 골드 색상). **Active Semantic: 30개.**

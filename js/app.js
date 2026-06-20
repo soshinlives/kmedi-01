@@ -4,6 +4,17 @@
 (function () {
   "use strict";
 
+  /* ---------- applyLang — 언어 코드/국기 동기화 헬퍼 ---------- */
+  function applyLang(code, flagImg) {
+    document.querySelectorAll('.lang-code, .header-lang-code').forEach(el => el.textContent = code);
+    if (flagImg) {
+      document.querySelectorAll('.lang-flag img').forEach(img => {
+        img.src = flagImg.src;
+        img.alt = flagImg.alt;
+      });
+    }
+  }
+
   /* ---------- Header: transparent -> solid on scroll ---------- */
   const header = document.querySelector(".header");
   const onScroll = () => {
@@ -13,10 +24,26 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
+  /* ---------- Header: hide main bar on scroll-down (non-index pages) ---------- */
+  const isIndex = /(?:^|\/)(index\.html)?$/.test(window.location.pathname);
+  if (header && !isIndex) {
+    let prevY = window.scrollY;
+    window.addEventListener("scroll", function () {
+      const y = window.scrollY;
+      if (y > 80) {
+        header.classList.toggle("is-compact", y > prevY);
+      } else {
+        header.classList.remove("is-compact");
+      }
+      prevY = y;
+    }, { passive: true });
+  }
+
   /* ---------- GNB full-screen overlay ---------- */
   const overlay = document.querySelector(".gnb-overlay");
   const openBtns = document.querySelectorAll(".menu-btn, .mbar-menu-trigger");
   const closeBtn = document.querySelector(".gnb-overlay__close");
+
   if (overlay) {
     openBtns.forEach(btn => {
       btn.addEventListener("click", () => {
@@ -26,15 +53,37 @@
         if (closeBtn) closeBtn.focus();
       });
     });
-    if (closeBtn) closeBtn.addEventListener("click", () => {
+    function closeOverlay() {
       overlay.classList.remove("is-open");
       overlay.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
       document.querySelectorAll(".gnb-col.is-open").forEach(c => c.classList.remove("is-open"));
       document.querySelectorAll(".gnb-has-sub.is-open").forEach(s => s.classList.remove("is-open"));
       document.querySelectorAll(".gnb-has-sub2.is-open").forEach(s => s.classList.remove("is-open"));
-    });
+    }
+    if (closeBtn) closeBtn.addEventListener("click", closeOverlay);
+
+    // 로고 클릭 → 오버레이 닫기만 하고 페이지 이동 없음
+    const overlayBrand = overlay.querySelector(".gnb-overlay__brand");
+    if (overlayBrand) {
+      overlayBrand.addEventListener("click", (e) => {
+        e.preventDefault();
+        closeOverlay();
+      });
+    }
   }
+
+  /* ★ 모바일 GNB 언어 탭 핸들러: 정적 HTML(.gnb-mobile-top)의 탭에 연결 ---------- */
+  (function wireGnbMobileLangTabs() {
+    const tabs = document.querySelectorAll('.gnb-overlay .gnb-mobile-top .gnb-lang-tab');
+    tabs.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        tabs.forEach(function(b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+        applyLang(btn.dataset.lang);
+      });
+    });
+  })();
 
   /* ---------- GNB accordion (mobile) ---------- */
   document.querySelectorAll(".gnb-col > h4").forEach(h4 => {
@@ -69,9 +118,10 @@
   /* ---------- 시술 팝업 시트 (모바일) ---------- */
   const procSheet = document.getElementById("procSheet");
   const procClose = procSheet && procSheet.querySelector(".proc-sheet__close");
+  const isMobile = () => window.matchMedia("(max-width: 860px)").matches;
   document.querySelectorAll(".gnb-proc-trigger").forEach(trigger => {
     trigger.addEventListener("click", (e) => {
-      if (window.innerWidth <= 860 && procSheet) {
+      if (isMobile() && procSheet) {
         e.preventDefault();
         e.stopPropagation();
         procSheet.classList.add("is-open");
@@ -324,15 +374,7 @@
       btn.addEventListener("click", () => {
         langSheet.querySelectorAll(".lang-sheet__opt").forEach(b => b.classList.remove("is-active"));
         btn.classList.add("is-active");
-        const code = btn.dataset.lang || "";
-        document.querySelectorAll(".header-lang-code, .lang-code").forEach(el => el.textContent = code);
-        const flagImg = btn.querySelector("img");
-        if (flagImg) {
-          document.querySelectorAll(".lang-flag img").forEach(img => {
-            img.src = flagImg.src;
-            img.alt = flagImg.alt;
-          });
-        }
+        applyLang(btn.dataset.lang || "", btn.querySelector("img"));
         closeLang();
       });
     });
@@ -355,17 +397,9 @@
   });
   document.querySelectorAll(".lang-option").forEach(opt => {
     opt.addEventListener("click", () => {
-      const code = opt.textContent.trim();
-      const flagImg = opt.querySelector("img");
       document.querySelectorAll(".lang-option").forEach(o => o.classList.remove("is-active"));
       opt.classList.add("is-active");
-      document.querySelectorAll(".lang-code, .header-lang-code").forEach(el => el.textContent = code);
-      if (flagImg) {
-        document.querySelectorAll(".lang-flag img").forEach(img => {
-          img.src = flagImg.src;
-          img.alt = flagImg.alt;
-        });
-      }
+      applyLang(opt.textContent.trim(), opt.querySelector("img"));
       const parentSel = opt.closest(".lang-select");
       if (parentSel) {
         parentSel.classList.remove("is-open");
