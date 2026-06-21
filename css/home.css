@@ -633,6 +633,14 @@
   text-transform: uppercase;
   font-weight: 700;
 }
+[data-cat="offer"] .news-card__cat   { color: var(--blue-500); }
+[data-cat="dining"] .news-card__cat  { color: #b85c38; }
+[data-cat="event"] .news-card__cat   { color: #2e7d4f; }
+
+/* 필터 버튼 active — 카테고리 색상 매핑 */
+.filter.is-active[data-cat="offer"]  { background: var(--blue-500); border-color: var(--blue-500); }
+.filter.is-active[data-cat="dining"] { background: #b85c38; border-color: #b85c38; }
+.filter.is-active[data-cat="event"]  { background: #2e7d4f; border-color: #2e7d4f; }
 .news-card__title {
   font-family: var(--font-sans);
   color: var(--text-gray-6);
@@ -1215,12 +1223,20 @@
   .highlights__head {
     margin-bottom: var(--space-40);
   }
-  /* 칩버튼 간격·크기 모바일 보정 */
+  /* 칩버튼 — 모바일 가로 스크롤 */
   .filters {
-    gap: var(--space-4);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: var(--space-6);
     margin-bottom: var(--space-32);
+    padding-bottom: var(--space-4);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  .filters::-webkit-scrollbar { display: none; }
   .filter {
+    flex-shrink: 0;
     padding: var(--space-6) var(--space-18);
     font-size: var(--text-13);
   }
