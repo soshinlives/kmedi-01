@@ -1371,7 +1371,7 @@
   }
   .hero__title {
     margin-top: 0;
-    font-size: clamp(27px, 5.5vw, 26px);
+    font-size: clamp(29px, 5.5vw, 44px);
     word-spacing: 0.05em;
     line-height: 1.2;
     letter-spacing: var(--tracking-tight);
