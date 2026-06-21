@@ -1313,6 +1313,150 @@ image-slot#cert-sgi {
     background: var(--surface-gray-1);
   }
 }
+.chat-btn__close {
+  display: none;
+}
+.chat-btn.is-open .chat-btn__icon {
+  display: none;
+}
+.chat-btn.is-open .chat-btn__close {
+  display: block;
+}
+
+/* ============================================================
+   CONTACT BOTTOM SHEET (문의하기)
+   ============================================================ */
+.contact-sheet {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+}
+.contact-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+.contact-sheet__inner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: var(--bg-white);
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
+  z-index: 1;
+}
+.contact-sheet__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding: 28px var(--space-20) 20px;
+  border-bottom: 1px solid var(--border-gray-1);
+}
+.contact-sheet__title {
+  font-size: var(--text-18);
+  font-weight: 700;
+  color: var(--text-gray-6);
+  margin-bottom: 6px;
+}
+.contact-sheet__subtitle {
+  font-size: var(--text-13);
+  color: var(--text-gray-4);
+  line-height: 1.5;
+}
+.contact-sheet__close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-gray-4);
+}
+.contact-sheet__close svg {
+  width: 20px;
+  height: 20px;
+}
+.contact-sheet__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px var(--space-20);
+  border-bottom: 1px solid var(--border-gray-1);
+}
+.contact-sheet__icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface-gray-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-gray-4);
+}
+.contact-sheet__icon svg {
+  width: 18px;
+  height: 18px;
+}
+.contact-sheet__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.contact-sheet__label {
+  font-size: var(--text-12);
+  color: var(--text-gray-4);
+}
+.contact-sheet__value {
+  font-size: var(--text-15);
+  font-weight: 700;
+  color: var(--text-gray-6);
+}
+.contact-sheet__hint {
+  font-size: var(--text-12);
+  color: var(--text-gray-3);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+.contact-sheet__copy {
+  flex-shrink: 0;
+  align-self: center;
+  padding: 6px 14px;
+  border: 1px solid var(--border-gray-2);
+  border-radius: 20px;
+  font-size: var(--text-12);
+  color: var(--text-gray-5);
+  background: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.contact-sheet__copy:active {
+  background: var(--surface-gray-1);
+}
+.contact-sheet__login-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px var(--space-20);
+  background: var(--bg-dark);
+  color: var(--bg-white);
+  text-decoration: none;
+  font-size: var(--text-15);
+  font-weight: 600;
+}
+.contact-sheet__login-row svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.contact-sheet__chevron {
+  margin-left: auto;
+}
 
 /* ============================================================
    GNB OVERLAY (full menu)
@@ -2372,7 +2516,15 @@ image-slot#cert-sgi {
     gap: var(--space-8) var(--space-20);
   }
   .footer dl {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 130px 1fr;
+  }
+
+  /* Contact bottom sheet */
+  .contact-sheet.is-open {
+    display: block;
+  }
+  .contact-sheet__inner {
+    bottom: 72px;
   }
   .footer dl dt {
     white-space: nowrap;
