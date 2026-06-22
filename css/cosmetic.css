@@ -234,27 +234,27 @@
 }
 /* 위시리스트: 토글 활성 */
 .cosm-hbtn.is-liked {
-  color: var(--gray-900);
+  color: #087eec;
 }
 .cosm-hbtn.is-liked svg {
-  fill: var(--gray-900);
-  stroke: var(--gray-900);
+  fill: #087eec;
+  stroke: #087eec;
 }
 /* 장바구니: 추가 완료 플래시 */
 .cosm-hbtn.is-added {
-  color: var(--gray-700);
-  background: rgba(0,0,0,0.06);
+  color: #087eec;
+  background: rgba(8, 126, 236, 0.15);
 }
 .cosm-hbtn.is-added svg {
-  stroke: var(--gray-700);
+  stroke: #087eec;
 }
 /* 공유: 복사 완료 플래시 */
 .cosm-hbtn.is-shared {
-  color: var(--gray-700);
-  background: rgba(0,0,0,0.08);
+  color: #087eec;
+  background: rgba(8, 126, 236, 0.15);
 }
 .cosm-hbtn.is-shared svg {
-  stroke: var(--gray-700);
+  stroke: #087eec;
 }
 /* 이전/다음 화살표: 클릭 시 */
 .cosm-hbtn.is-nav-clicked {
