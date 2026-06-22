@@ -161,7 +161,7 @@
   margin: 0;
 }
 .tv-count__num {
-  color: var(--gray-900);
+  color: var(--text-gray-6);
   font-weight: 700;
 }
 
@@ -223,7 +223,7 @@
   font-size: var(--text-11);
   font-weight: 600;
   color: var(--accent-gray-1);
-  background: var(--gray-50);
+  background: var(--surface-gray-1);
   border-radius: 100px;
   padding: 3px 9px;
   letter-spacing: var(--tracking-loose);
@@ -388,7 +388,7 @@
   font-size: var(--text-11);
   font-weight: 700;
   color: var(--accent-gray-1);
-  background: var(--gray-50);
+  background: var(--surface-gray-1);
   border-radius: 100px;
   padding: 4px 12px;
   margin-bottom: var(--space-12);
