@@ -1256,19 +1256,18 @@ image-slot#cert-sgi {
     white-space: nowrap;
   }
   .gnb-cta-btn--book {
-    background: var(--gray-950);
+    background: var(--blue-500);
     color: var(--text-white) !important;
   }
   .gnb-cta-btn--book:hover {
+    background: var(--gray-950);
+  }
+  .gnb-cta-btn--mail {
+    background: var(--gray-950);
+    color: var(--text-white) !important;
+  }
+  .gnb-cta-btn--mail:hover {
     background: var(--blue-500);
-  }
-  .gnb-cta-btn--tel {
-    background: rgba(255, 255, 255, 0.1);
-    /* border: 1px solid rgba(255, 255, 255, 0.2); */
-    color: rgba(255, 255, 255, 0.85) !important;
-  }
-  .gnb-cta-btn--tel:hover {
-    background: rgba(255, 255, 255, 0.18);
     color: var(--text-white) !important;
   }
   .gnb-cta-btn svg {
@@ -1720,11 +1719,25 @@ image-slot#cert-sgi {
   font-weight: 600;
   line-height: 2.1;
 }
-.gnb-col a[href]:not([href="#"]):hover {
-  text-decoration: underline;
-  text-decoration-color: var(--text-white);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
+@media (hover: hover) {
+  .gnb-col a[href]:not([href="#"]):hover {
+    text-decoration: underline;
+    text-decoration-color: var(--text-white);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+}
+/* 모바일 탭 시: 밑줄/탭 하이라이트/텍스트 선택 방지 */
+.gnb-overlay a,
+.gnb-overlay button,
+.gnb-overlay h4 {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.gnb-overlay a:active,
+.gnb-overlay a:focus {
+  text-decoration: none;
 }
 /* 신규화면 마커: 노랑 제거 → 일반 텍스트색. 구분은 텍스트 옆 * 로 (잠정, 내일 논의) */
 .gnb-col a.gnb-link--utility {
@@ -2113,7 +2126,7 @@ image-slot#cert-sgi {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--space-12) var(--space-8) var(--space-12) var(--space-16);
+    padding: var(--space-12) var(--space-18) var(--space-12) var(--space-16);
     font-size: var(--text-13);
     font-weight: 450;
     color: var(--text-gray-6);
