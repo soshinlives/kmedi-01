@@ -882,9 +882,6 @@
         <h2 id="contactTitle" class="contact-sheet__title">문의하기</h2>
         <p class="contact-sheet__subtitle">편하신 방법으로 연락 주세요. 평일 9시-18시(KST) 내에 답변드립니다.</p>
       </div>
-      <button class="contact-sheet__close" id="contactClose" aria-label="닫기">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
     </div>
     <div class="contact-sheet__row">
       <div class="contact-sheet__icon">
@@ -1049,7 +1046,6 @@
 (function(){
   const btn      = document.getElementById('contactBtn');
   const sheet    = document.getElementById('contactSheet');
-  const closeBtn = document.getElementById('contactClose');
   const backdrop = document.getElementById('contactBackdrop');
   if (!btn || !sheet) return;
 
@@ -1071,7 +1067,6 @@
   btn.addEventListener('click', function() {
     sheet.classList.contains('is-open') ? closeSheet() : openSheet();
   });
-  if (closeBtn)  closeBtn.addEventListener('click', closeSheet);
   if (backdrop)  backdrop.addEventListener('click', closeSheet);
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeSheet(); });
 

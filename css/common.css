@@ -1420,19 +1420,6 @@ image-slot#cert-sgi {
   color: var(--text-gray-4);
   line-height: 1.5;
 }
-.contact-sheet__close {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-gray-4);
-}
-.contact-sheet__close svg {
-  width: 20px;
-  height: 20px;
-}
 .contact-sheet__row {
   display: flex;
   align-items: flex-start;
