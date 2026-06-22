@@ -6,9 +6,9 @@
 
   /* ---------- applyLang — 언어 코드/국기 동기화 헬퍼 ---------- */
   function applyLang(code, flagImg) {
-    document.querySelectorAll('.lang-code, .header-lang-code').forEach(el => el.textContent = code);
+    document.querySelectorAll(".lang-code, .header-lang-code").forEach((el) => (el.textContent = code));
     if (flagImg) {
-      document.querySelectorAll('.lang-flag img').forEach(img => {
+      document.querySelectorAll(".lang-flag img").forEach((img) => {
         img.src = flagImg.src;
         img.alt = flagImg.alt;
       });
@@ -28,15 +28,19 @@
   const isIndex = /(?:^|\/)(index\.html)?$/.test(window.location.pathname);
   if (header && !isIndex) {
     let prevY = window.scrollY;
-    window.addEventListener("scroll", function () {
-      const y = window.scrollY;
-      if (y > 80) {
-        header.classList.toggle("is-compact", y > prevY);
-      } else {
-        header.classList.remove("is-compact");
-      }
-      prevY = y;
-    }, { passive: true });
+    window.addEventListener(
+      "scroll",
+      function () {
+        const y = window.scrollY;
+        if (y > 80) {
+          header.classList.toggle("is-compact", y > prevY);
+        } else {
+          header.classList.remove("is-compact");
+        }
+        prevY = y;
+      },
+      { passive: true },
+    );
   }
 
   /* ---------- GNB full-screen overlay ---------- */
@@ -46,7 +50,7 @@
 
   if (overlay) {
     var gnbOpener = null;
-    openBtns.forEach(btn => {
+    openBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
         gnbOpener = btn;
         overlay.classList.add("is-open");
@@ -59,26 +63,35 @@
       overlay.classList.remove("is-open");
       overlay.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
-      document.querySelectorAll(".gnb-col.is-open").forEach(c => c.classList.remove("is-open"));
-      document.querySelectorAll(".gnb-has-sub.is-open").forEach(s => s.classList.remove("is-open"));
-      document.querySelectorAll(".gnb-has-sub2.is-open").forEach(s => s.classList.remove("is-open"));
-      if (gnbOpener) { gnbOpener.focus(); gnbOpener = null; }
+      document.querySelectorAll(".gnb-col.is-open").forEach((c) => c.classList.remove("is-open"));
+      document.querySelectorAll(".gnb-has-sub.is-open").forEach((s) => s.classList.remove("is-open"));
+      document.querySelectorAll(".gnb-has-sub2.is-open").forEach((s) => s.classList.remove("is-open"));
+      if (gnbOpener) {
+        gnbOpener.focus();
+        gnbOpener = null;
+      }
     }
     if (closeBtn) closeBtn.addEventListener("click", closeOverlay);
 
     // Focus trap: keep Tab/Shift+Tab inside overlay while open
-    overlay.addEventListener("keydown", function(e) {
-      if (e.key === "Escape") { closeOverlay(); return; }
+    overlay.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        closeOverlay();
+        return;
+      }
       if (e.key !== "Tab") return;
-      var focusable = Array.from(overlay.querySelectorAll(
-        'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      )).filter(el => !el.closest('[aria-hidden="true"]'));
+      var focusable = Array.from(
+        overlay.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'),
+      ).filter((el) => !el.closest('[aria-hidden="true"]'));
       if (!focusable.length) return;
-      var first = focusable[0], last = focusable[focusable.length - 1];
+      var first = focusable[0],
+        last = focusable[focusable.length - 1];
       if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault(); last.focus();
+        e.preventDefault();
+        last.focus();
       } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault(); first.focus();
+        e.preventDefault();
+        first.focus();
       }
     });
 
@@ -94,31 +107,33 @@
 
   /* ★ 모바일 GNB 언어 탭 핸들러: 정적 HTML(.gnb-mobile-top)의 탭에 연결 ---------- */
   (function wireGnbMobileLangTabs() {
-    const tabs = document.querySelectorAll('.gnb-overlay .gnb-mobile-top .gnb-lang-tab');
-    tabs.forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        tabs.forEach(function(b) { b.classList.remove('is-active'); });
-        btn.classList.add('is-active');
+    const tabs = document.querySelectorAll(".gnb-overlay .gnb-mobile-top .gnb-lang-tab");
+    tabs.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        tabs.forEach(function (b) {
+          b.classList.remove("is-active");
+        });
+        btn.classList.add("is-active");
         applyLang(btn.dataset.lang);
       });
     });
   })();
 
   /* ---------- GNB accordion (mobile) ---------- */
-  document.querySelectorAll(".gnb-col > h4").forEach(h4 => {
+  document.querySelectorAll(".gnb-col > h4").forEach((h4) => {
     h4.addEventListener("click", () => {
       const col = h4.parentElement;
       const isOpen = col.classList.contains("is-open");
-      document.querySelectorAll(".gnb-col.is-open").forEach(c => {
+      document.querySelectorAll(".gnb-col.is-open").forEach((c) => {
         c.classList.remove("is-open");
-        c.querySelectorAll(".gnb-has-sub.is-open").forEach(s => s.classList.remove("is-open"));
+        c.querySelectorAll(".gnb-has-sub.is-open").forEach((s) => s.classList.remove("is-open"));
       });
       if (!isOpen) col.classList.add("is-open");
     });
   });
 
   /* ---------- GNB sub-list toggle (시술 하위 메뉴) ---------- */
-  document.querySelectorAll(".gnb-sub-toggle").forEach(btn => {
+  document.querySelectorAll(".gnb-sub-toggle").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const li = btn.closest(".gnb-has-sub");
@@ -127,7 +142,7 @@
   });
 
   /* ---------- GNB sub2 토글 (시술 하위 목록) ---------- */
-  document.querySelectorAll(".gnb-sub2-toggle").forEach(btn => {
+  document.querySelectorAll(".gnb-sub2-toggle").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       btn.closest(".gnb-has-sub2").classList.toggle("is-open");
@@ -138,7 +153,7 @@
   const procSheet = document.getElementById("procSheet");
   const procClose = procSheet && procSheet.querySelector(".proc-sheet__close");
   const isMobile = () => window.matchMedia("(max-width: 860px)").matches;
-  document.querySelectorAll(".gnb-proc-trigger").forEach(trigger => {
+  document.querySelectorAll(".gnb-proc-trigger").forEach((trigger) => {
     trigger.addEventListener("click", (e) => {
       if (isMobile() && procSheet) {
         e.preventDefault();
@@ -156,7 +171,7 @@
   }
 
   /* ---------- Hero slider ---------- */
-  const slides = [...document.querySelectorAll(".hero__slide")].filter(s => getComputedStyle(s).display !== 'none');
+  const slides = [...document.querySelectorAll(".hero__slide")].filter((s) => getComputedStyle(s).display !== "none");
   const counterCur = document.querySelector(".hero__counter-cur");
   const counterTot = document.querySelector(".hero__counter-tot");
   const heroSection = document.querySelector(".hero");
@@ -169,7 +184,7 @@
   function go(i) {
     cur = (i + slides.length) % slides.length;
     slides.forEach((s, k) => s.classList.toggle("is-active", k === cur));
-    if (counterCur) counterCur.textContent = String(cur + 1).padStart(2, '0');
+    if (counterCur) counterCur.textContent = String(cur + 1).padStart(2, "0");
     const slide = slides[cur];
     if (heroTitle) heroTitle.innerHTML = slide.dataset.title || defaultTitle;
     if (heroDesc) heroDesc.innerHTML = slide.dataset.desc || defaultDesc;
@@ -182,7 +197,7 @@
     if (timer) clearInterval(timer);
   }
   if (slides.length) {
-    if (counterTot) counterTot.textContent = String(slides.length).padStart(2, '0');
+    if (counterTot) counterTot.textContent = String(slides.length).padStart(2, "0");
     go(0);
     play();
   }
@@ -191,20 +206,40 @@
   const heroEl = document.querySelector(".hero");
   if (heroEl) {
     let tx = 0;
-    heroEl.addEventListener("touchstart", (e) => { tx = e.touches[0].clientX; }, { passive: true });
-    heroEl.addEventListener("touchend", (e) => {
-      const dx = e.changedTouches[0].clientX - tx;
-      if (Math.abs(dx) < 40) return;
-      go(dx < 0 ? cur + 1 : cur - 1);
-      play();
-    }, { passive: true });
+    heroEl.addEventListener(
+      "touchstart",
+      (e) => {
+        tx = e.touches[0].clientX;
+      },
+      { passive: true },
+    );
+    heroEl.addEventListener(
+      "touchend",
+      (e) => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) < 40) return;
+        go(dx < 0 ? cur + 1 : cur - 1);
+        play();
+      },
+      { passive: true },
+    );
   }
 
   /* hero nav buttons */
   const heroNavPrev = document.querySelector(".hero__nav--prev");
   const heroNavNext = document.querySelector(".hero__nav--next");
-  if (heroNavPrev) heroNavPrev.addEventListener("click", () => { stop(); go(cur - 1); play(); });
-  if (heroNavNext) heroNavNext.addEventListener("click", () => { stop(); go(cur + 1); play(); });
+  if (heroNavPrev)
+    heroNavPrev.addEventListener("click", () => {
+      stop();
+      go(cur - 1);
+      play();
+    });
+  if (heroNavNext)
+    heroNavNext.addEventListener("click", () => {
+      stop();
+      go(cur + 1);
+      play();
+    });
 
   /* ---------- News filter ---------- */
   const filters = [...document.querySelectorAll(".filter")];
@@ -313,9 +348,7 @@
       // clamp drag so it can't pull past first or last slide
       const { step } = metrics();
       const maxPull = step * 0.1;
-      const clamped =
-        fIndex === 0 ? Math.min(dx, maxPull) :
-        fIndex === slideCount - 1 ? Math.max(dx, -maxPull) : dx;
+      const clamped = fIndex === 0 ? Math.min(dx, maxPull) : fIndex === slideCount - 1 ? Math.max(dx, -maxPull) : dx;
       setTranslate(base + clamped, false);
     });
     function endDrag(e) {
@@ -323,7 +356,9 @@
       down = false;
       if (horiz) {
         fvp.classList.remove("is-dragging");
-        try { fvp.releasePointerCapture(e.pointerId); } catch (_) {}
+        try {
+          fvp.releasePointerCapture(e.pointerId);
+        } catch (_) {}
         const dx = lastX - startX;
         const { step } = metrics();
         let shift = 0;
@@ -333,9 +368,16 @@
     }
     fvp.addEventListener("pointerup", endDrag);
     fvp.addEventListener("pointercancel", endDrag);
-    fvp.addEventListener("click", (e) => {
-      if (moved) { e.preventDefault(); e.stopPropagation(); }
-    }, true);
+    fvp.addEventListener(
+      "click",
+      (e) => {
+        if (moved) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      },
+      true,
+    );
     fvp.addEventListener("dragstart", (e) => e.preventDefault());
 
     window.addEventListener("resize", () => goFeature(fIndex, false));
@@ -352,15 +394,17 @@
       langSheet.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
     };
-    mbarLangs.forEach(btn => btn.addEventListener("click", () => {
-      langSheet.classList.add("is-open");
-      langSheet.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
-    }));
-    backdrop.addEventListener("click", closeLang);
-    langSheet.querySelectorAll(".lang-sheet__opt").forEach(btn => {
+    mbarLangs.forEach((btn) =>
       btn.addEventListener("click", () => {
-        langSheet.querySelectorAll(".lang-sheet__opt").forEach(b => b.classList.remove("is-active"));
+        langSheet.classList.add("is-open");
+        langSheet.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }),
+    );
+    backdrop.addEventListener("click", closeLang);
+    langSheet.querySelectorAll(".lang-sheet__opt").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        langSheet.querySelectorAll(".lang-sheet__opt").forEach((b) => b.classList.remove("is-active"));
         btn.classList.add("is-active");
         applyLang(btn.dataset.lang || "", btn.querySelector("img"));
         closeLang();
@@ -369,7 +413,7 @@
   }
 
   /* ---------- Desktop lang-select dropdown ---------- */
-  document.querySelectorAll(".lang-select").forEach(sel => {
+  document.querySelectorAll(".lang-select").forEach((sel) => {
     const btn = sel.querySelector(".lang-select__btn");
     const dropdown = sel.querySelector(".lang-dropdown");
     if (!btn || !dropdown) return;
@@ -383,9 +427,9 @@
       btn.setAttribute("aria-expanded", "false");
     });
   });
-  document.querySelectorAll(".lang-option").forEach(opt => {
+  document.querySelectorAll(".lang-option").forEach((opt) => {
     opt.addEventListener("click", () => {
-      document.querySelectorAll(".lang-option").forEach(o => o.classList.remove("is-active"));
+      document.querySelectorAll(".lang-option").forEach((o) => o.classList.remove("is-active"));
       opt.classList.add("is-active");
       applyLang(opt.textContent.trim(), opt.querySelector("img"));
       const parentSel = opt.closest(".lang-select");
@@ -399,9 +443,9 @@
 
   /* ---------- Mobile bottom bar: active state ---------- */
   const mbarBtns = document.querySelectorAll(".mobile-bar .mbar-btn");
-  mbarBtns.forEach(btn => {
+  mbarBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      mbarBtns.forEach(b => b.classList.remove("is-active"));
+      mbarBtns.forEach((b) => b.classList.remove("is-active"));
       btn.classList.add("is-active");
     });
   });
@@ -411,13 +455,17 @@
     const bars = document.querySelectorAll(".mobile-bar");
     if (!bars.length) return;
     let scrollTimer = null;
-    window.addEventListener("scroll", () => {
-      bars.forEach(b => b.classList.add("is-hidden"));
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => {
-        bars.forEach(b => b.classList.remove("is-hidden"));
-      }, 300);
-    }, { passive: true });
+    window.addEventListener(
+      "scroll",
+      () => {
+        bars.forEach((b) => b.classList.add("is-hidden"));
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+          bars.forEach((b) => b.classList.remove("is-hidden"));
+        }, 300);
+      },
+      { passive: true },
+    );
   })();
 
   /* ---------- Footer top button ---------- */
@@ -429,9 +477,13 @@
   /* ---------- Top button ---------- */
   const topBtn = document.querySelector(".top-btn");
   if (topBtn) {
-    window.addEventListener("scroll", () => {
-      topBtn.classList.toggle("is-visible", window.scrollY > 400);
-    }, { passive: true });
+    window.addEventListener(
+      "scroll",
+      () => {
+        topBtn.classList.toggle("is-visible", window.scrollY > 400);
+      },
+      { passive: true },
+    );
     topBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
   }
 
@@ -451,12 +503,9 @@
 
   /* ---------- Mobile CTA: hide when footer is visible ---------- */
   const heroCta = document.querySelector(".hero__cta");
-  const footer  = document.querySelector(".footer");
+  const footer = document.querySelector(".footer");
   if (heroCta && footer) {
-    const footerIO = new IntersectionObserver(
-      ([e]) => heroCta.classList.toggle("is-hidden", e.isIntersecting),
-      { threshold: 0 }
-    );
+    const footerIO = new IntersectionObserver(([e]) => heroCta.classList.toggle("is-hidden", e.isIntersecting), { threshold: 0 });
     footerIO.observe(footer);
   }
 })();
