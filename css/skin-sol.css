@@ -1036,20 +1036,19 @@
   .pss-result__close-btn:active {
     background: var(--border-gray-1);
   }
-  /* 다시 분석하기 — 콘텐츠 안쪽 텍스트 버튼 */
+  /* 다시 분석하기 — 상단 바 버튼 */
   .pss-result__reset-btn {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-6);
-    margin-top: var(--space-16);
-    padding: var(--space-8) var(--space-16);
-    border-radius: 0;
+    gap: 5px;
+    padding: 6px 10px;
+    border-radius: var(--radius-full);
     border: 1px solid var(--border-gray-1);
     background: var(--bg-white);
-    color: var(--text-gray-3);
-    font-size: var(--text-13);
+    color: var(--text-gray-4);
+    font-size: var(--text-12);
     font-weight: 500;
-    letter-spacing: var(--tracking-tight);
+    flex-shrink: 0;
     cursor: pointer;
     transition:
       border-color 0.2s,
