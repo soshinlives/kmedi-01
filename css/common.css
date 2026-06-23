@@ -2485,6 +2485,12 @@ image-slot#cert-sgi {
     height: 26px;
     flex-shrink: 0;
   }
+  button.mbar-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
   /* Language bottom sheet */
   .lang-sheet.is-open {
     display: block;
