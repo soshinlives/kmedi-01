@@ -1,0 +1,16 @@
+# Dependencies & build output (Vercel installs/builds these itself)
+node_modules
+.next
+out
+
+# Original source kept only for local `npm run convert` — not used by `next build`
+_src
+css
+*.html
+
+# Docs / editor / design files
+MD
+.vscode
+.claude
+.DS_Store
+scripts/_pagedata.json

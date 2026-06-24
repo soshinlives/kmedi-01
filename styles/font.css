@@ -1,0 +1,14 @@
+/* ============================================================
+   font.css — 웹폰트 로드 + 폰트 변수 정의
+   로드 순서: font.css → reset.css → theme.css → common.css → page.css
+   ============================================================ */
+
+/* Pretendard Variable (Dynamic Subset) — CDN */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css");
+
+:root {
+  /* 영문: Optima(Mac) / Candara(Win)  ·  한글: Pretendard Variable(CDN) */
+  --font-sans:
+    Optima, Candara, "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+    sans-serif;
+}

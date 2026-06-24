@@ -1,0 +1,307 @@
+/* ============================================================
+   SKIN ANALYSIS — 피부 분석 서비스 Page
+   Depends on: reset.css · theme.css · common.css
+   ============================================================ */
+
+.gnb { display: none; }
+
+
+/* ─────────────────────────────────────────────────────
+   IMAGE AREA — AI 피부 분석 이미지 (다크 배경 안에 담기)
+   ───────────────────────────────────────────────────── */
+.sa-img-area {
+  background: var(--navy-900);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  max-height: 68vh;
+}
+.sa-img-area__img {
+  width: 100%;
+  max-width: 100%;
+  height: 68vh;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+/* ─────────────────────────────────────────────────────
+   TAB WRAP — 탭 선택자를 콘텐츠 위에 플로팅
+   ───────────────────────────────────────────────────── */
+.sa-tab-wrap {
+  background: var(--surface-gray-1);
+  display: flex;
+  justify-content: center;
+  padding: 28px 20px;
+  border-bottom: 1px solid var(--border-gray-2);
+}
+
+/* Segmented pill 컨트롤 — tab.css에서 .tab-pill__btn 공통 스타일 제공 */
+.sa-tab-selector {
+  display: inline-flex;
+  background: var(--bg-white);
+  border: 1px solid var(--border-gray-2);
+  border-radius: 0;
+  padding: var(--space-5);
+  gap: var(--space-4);
+  box-shadow: none;
+}
+.sa-tab-selector .tab-pill__btn {
+  padding: 11px 28px;
+  border-radius: 0;
+  font-size: var(--text-14);
+  font-weight: 500;
+  color: var(--text-gray-2);
+}
+.sa-tab-selector .tab-pill__btn.is-active {
+  background: var(--accent-blue);
+  font-weight: 600;
+  color: var(--text-white);
+}
+@media (hover: hover) {
+.sa-tab-selector .tab-pill__btn:hover:not(.is-active) {
+  color: var(--text-gray-4);
+  background: var(--bg-gray);
+}
+}
+
+/* ─────────────────────────────────────────────────────
+   CONTENT AREA — 탭 패널들
+   ───────────────────────────────────────────────────── */
+.sa-content {
+  background: var(--surface-gray-1);
+  padding-bottom: clamp(48px, 7vw, 96px);
+}
+
+.sa-panels {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: clamp(32px, 5vw, 56px) clamp(20px, 5vw, 40px);
+}
+.sa-panel {
+  display: none;
+}
+.sa-panel.is-active {
+  display: block;
+}
+
+/* ─────────────────────────────────────────────────────
+   패널 공통 텍스트
+   ───────────────────────────────────────────────────── */
+.sa-panel__title {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: 700;
+  letter-spacing: var(--tracking-tighter);
+  color: var(--text-gray-7);
+  margin-bottom: var(--space-12);
+}
+.sa-panel__sub {
+  font-size: var(--text-14);
+  color: var(--text-gray-3);
+  line-height: 1.75;
+  margin-bottom: var(--space-36);
+  max-width: 640px;
+  word-break: keep-all;
+}
+/* ─────────────────────────────────────────────────────
+   패널 헤더
+   ───────────────────────────────────────────────────── */
+.sa-panel__header {
+  margin-bottom: var(--space-28);
+}
+
+/* ─────────────────────────────────────────────────────
+   서브탭 (에이징 / 트러블) — 언더라인 스타일
+   ───────────────────────────────────────────────────── */
+.sa-subtab-nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border-gray-2);
+  margin-bottom: var(--space-28);
+}
+.sa-subtab {
+  padding: 14px 28px;
+  font-size: var(--text-15);
+  font-weight: 500;
+  color: var(--text-gray-2);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: color 0.18s, border-color 0.18s;
+  white-space: nowrap;
+}
+.sa-subtab.is-active {
+  color: var(--accent-blue);
+  border-bottom-color: var(--accent-blue);
+  font-weight: 700;
+  font-size: var(--text-15);
+}
+@media (hover: hover) {
+.sa-subtab:hover:not(.is-active) { color: var(--text-gray-4); }
+}
+
+/* ─────────────────────────────────────────────────────
+   서브패널
+   ───────────────────────────────────────────────────── */
+.sa-subpanel { display: none; }
+.sa-subpanel.is-active { display: block; }
+.sa-subpanel__desc {
+  font-size: var(--text-14);
+  color: var(--text-gray-3);
+  line-height: 1.7;
+  margin-bottom: var(--space-24);
+  word-break: keep-all;
+}
+
+/* ─────────────────────────────────────────────────────
+   슬라이드 캐러셀
+   ───────────────────────────────────────────────────── */
+.sa-carousel {
+  background: var(--bg-white);
+  border: 1px solid var(--border-gray-1);
+}
+.sa-carousel__viewport {
+  overflow: hidden;
+}
+.sa-carousel__track {
+  display: flex;
+  transition: transform 0.34s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+.sa-carousel__slide {
+  flex: 0 0 100%;
+  width: 100%;
+}
+
+/* 슬라이드 내용 카드 */
+.sa-slide {
+  padding: clamp(28px, 4vw, 48px) clamp(24px, 4vw, 48px);
+  min-height: 240px;
+}
+.sa-slide__idx {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 0;
+  background: var(--blue-100);
+  color: var(--accent-blue);
+  font-size: var(--text-13);
+  font-weight: 700;
+  margin-bottom: var(--space-16);
+}
+.sa-slide__title {
+  font-size: clamp(18px, 2.2vw, 22px);
+  font-weight: 700;
+  color: var(--text-gray-7);
+  margin-bottom: var(--space-18);
+  letter-spacing: var(--tracking-tighter);
+}
+.sa-slide__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+.sa-slide__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-10);
+  font-size: var(--text-14);
+  color: var(--text-gray-3);
+  line-height: 1.72;
+  word-break: keep-all;
+}
+.sa-slide__list li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-gray-5);
+  margin-top: 9px;
+}
+
+/* 컨트롤 (화살표 + 인디케이터) */
+.sa-carousel__ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-top: 1px solid var(--bg-gray);
+  background: var(--surface-gray-1);
+}
+.sa-carousel__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--border-gray-1);
+  border-radius: 50%;
+  background: var(--bg-white);
+  color: var(--text-gray-7);
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+  flex-shrink: 0;
+}
+@media (hover: hover) {
+.sa-carousel__arrow:hover:not(:disabled) {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: var(--text-white);
+}
+}
+.sa-carousel__arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.sa-carousel__indicators {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.sa-carousel__dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-gray-2);
+  background: var(--bg-white);
+  color: var(--text-gray-1);
+  font-size: var(--text-11);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+.sa-carousel__dot.is-active {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: var(--text-white);
+  transform: scale(1.15);
+  box-shadow: 0 0 0 3px var(--blue-100);
+}
+@media (hover: hover) {
+.sa-carousel__dot:hover:not(.is-active) {
+  border-color: var(--blue-300);
+  color: var(--accent-blue);
+}
+}
+
+/* ─────────────────────────────────────────────────────
+   Responsive
+   ───────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .sa-img-area { max-height: 48vh; }
+  .sa-img-area__img { height: 48vh; }
+  .sa-tab-selector .tab-pill__btn { padding: 10px 18px; font-size: var(--text-13); }
+  .page-hero__sub br { display: none; }
+.sa-subtab { padding: 10px 16px; font-size: var(--text-13); }
+  .sa-carousel__dot { width: 24px; height: 24px; font-size: var(--text-10); }
+}

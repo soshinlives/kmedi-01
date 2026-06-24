@@ -1,0 +1,1921 @@
+import SiteLayout from "@/components/SiteLayout";
+import Link from "next/link";
+import "../../styles/skin-sol.css";
+
+const PAGE_INLINE: string[] = [
+`(function () {
+  'use strict';
+
+  /* ── Login Modal ── */
+  const trigger  = document.getElementById('loginTrigger');
+  const modal    = document.getElementById('loginModal');
+  const closeBtn = document.getElementById('loginClose');
+  const backdrop = document.getElementById('loginBackdrop');
+  function openModal()  { modal.classList.add('is-open'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+  function closeModal() { modal.classList.remove('is-open'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+  if (trigger)  trigger.addEventListener('click',  function(e){ e.preventDefault(); openModal(); });
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (backdrop) backdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  const gnbLogin = document.querySelector('.gnb-login-btn');
+  if (gnbLogin) gnbLogin.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
+
+  /* ── Password toggle ── */
+  const pwdInput  = document.getElementById('loginPassword');
+  const pwdToggle = document.getElementById('loginPwdToggle');
+  const eyeIcon   = document.getElementById('eyeIcon');
+  if (pwdToggle) pwdToggle.addEventListener('click', function(){
+    const hidden = pwdInput.type === 'password';
+    pwdInput.type = hidden ? 'text' : 'password';
+    eyeIcon.innerHTML = hidden
+      ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
+      : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  });
+
+  /* ── Footer TOP button ── */
+  const topBtn = document.querySelector('.footer__top-btn');
+  if (topBtn) topBtn.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+
+  /* ── Reveal on scroll ── */
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  if (revealEls.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:0.12});
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+  /* ================================================================
+     SKIN TYPE QUIZ LOGIC — SLIDER
+     ================================================================ */
+
+  const selections = { moisture: null, pigment: null, elastic: null, sensitive: null };
+  const STEP_IDS   = { moisture: 'step-moisture', pigment: 'step-pigment', elastic: 'step-elastic', sensitive: 'step-sensitive' };
+  const SLIDE_ORDER = ['moisture', 'pigment', 'elastic', 'sensitive'];
+
+  /* ── Quiz slider ── */
+  var quizTrack = document.getElementById('pssQuizTrack');
+  var currentQuizSlide = 0;
+
+  function goQuizSlide(idx) {
+    var slides = document.querySelectorAll('.pss-quiz-slide');
+    if (idx < 0 || idx >= slides.length) return;
+    currentQuizSlide = idx;
+    quizTrack.style.transform = 'translateX(-' + (idx * 100) + '%)';
+
+    /* Update step is-active */
+    document.querySelectorAll('.pss-step').forEach(function(s, i) {
+      s.classList.toggle('is-active', i === idx);
+    });
+  }
+
+  /* Step circles clickable */
+  document.querySelectorAll('.pss-step').forEach(function(stepEl, i) {
+    stepEl.style.cursor = 'pointer';
+    stepEl.addEventListener('click', function() { goQuizSlide(i); });
+  });
+
+  /* Init: activate first step */
+  goQuizSlide(0);
+
+  /* ── Listen for radio changes ── */
+  document.querySelectorAll('.pss-option__input').forEach(function(input){
+    input.addEventListener('change', function(){
+      var cat = this.closest('.pss-category').dataset.cat;
+      selections[cat] = this.value;
+
+      /* Mark category answered */
+      this.closest('.pss-category').classList.add('is-answered');
+
+      /* Step: done */
+      var stepEl = document.getElementById(STEP_IDS[cat]);
+      if (stepEl) stepEl.classList.add('is-done');
+
+      /* Enable analyze button when all 4 selected */
+      var allDone = Object.values(selections).every(function(v){ return v !== null; });
+      var btn = document.getElementById('analyzeBtn');
+      var hint = document.getElementById('analyzeHint');
+      if (allDone) {
+        btn.disabled = false;
+        btn.removeAttribute('aria-disabled');
+        btn.classList.add('is-ready');
+        if (hint) hint.style.opacity = '0';
+      }
+
+      /* Auto-advance to next slide */
+      var nextIdx = currentQuizSlide + 1;
+      if (nextIdx < 4) {
+        setTimeout(function() { goQuizSlide(nextIdx); }, 550);
+      }
+    });
+  });
+
+  /* ── Skin type data ── */
+  const MOISTURE_TEXT  = { D: '건성', O: '지성' };
+  const PIGMENT_TEXT   = { P: '색소침착', N: '비색소' };
+  const ELASTIC_TEXT   = { W: '주름성', F: '탄력성' };
+  const SENSITIVE_TEXT = { S: '민감성', R: '저항성' };
+
+  function buildCode(m, p, e, s) {
+    return m + s + p + e;
+  }
+
+  function buildKrText(m, p, e, s) {
+    return [MOISTURE_TEXT[m], SENSITIVE_TEXT[s], PIGMENT_TEXT[p], ELASTIC_TEXT[e]].join(' · ');
+  }
+
+  function buildComment(m, p, e, s) {
+    let intro = '';
+    if (m === 'O') intro += '피지 분비가 많아 번들거림이 나타나기 쉽고, ';
+    else           intro += '피부 수분이 부족하여 당김과 각질이 생기기 쉽고, ';
+
+    if (s === 'S') intro += '외부 자극에 민감하게 반응하며 붉어짐이 나타날 수 있는 피부 타입입니다.';
+    else           intro += '외부 자극에 대한 내성이 강한 건강한 피부 타입입니다.';
+
+    let detail = '';
+    if (p === 'P') detail += ' 멜라닌 생성이 활발하여 기미·잡티 등 색소 침착이 발생하기 쉬우므로 브라이트닝 케어가 필요합니다.';
+    else           detail += ' 피부톤이 비교적 균일하고 색소 침착이 적어 밝고 화사한 피부 상태를 유지하기에 유리합니다.';
+
+    if (e === 'W') detail += ' 피부 탄력이 저하되어 주름이 생기기 쉬우므로 콜라겐 생성을 촉진하는 리프팅 케어를 추천합니다.';
+    else           detail += ' 피부 탄력이 좋고 주름이 적은 건강한 상태로, 예방적 항노화 케어로 건강한 피부를 유지하세요.';
+
+    return intro + detail;
+  }
+
+  function buildFocusTags(m, p, e, s) {
+    const tags = [];
+    if (m === 'O') tags.push('유분 조절');
+    else           tags.push('집중 보습');
+    if (s === 'S') tags.push('진정 케어');
+    if (p === 'P') tags.push('색소침착');
+    if (e === 'W') tags.push('탄력·주름');
+    if (m === 'D') tags.push('수분 공급');
+    if (s === 'R') tags.push('기본 유지');
+    if (p === 'N') tags.push('안티옥시던트');
+    if (e === 'F') tags.push('예방 관리');
+    return tags.slice(0, 4);
+  }
+
+  const INGREDIENTS_MAP = {
+    O: [
+      { code:'BMTS-AUT-SOD1', ppm:'0.5ppm', area:'진체', name:'항산화 효소', desc:'활성산소 제거, 피부 노화 방지, 모공 정화' },
+      { code:'BMTS-AUT-NIA',  ppm:'2%',     area:'표피', name:'나이아신아마이드', desc:'피지 분비 억제, 모공 수축, 피부결 개선' },
+      { code:'BMTS-AUT-ZNO',  ppm:'1%',     area:'표피', name:'산화 아연', desc:'항균·피지 조절, 모공 정제, 트러블 예방' }
+    ],
+    D: [
+      { code:'BMTS-AUT-HA',   ppm:'1.5%',   area:'진체', name:'히알루론산', desc:'강력한 수분 결합력, 피부 탄력 개선, 건조함 해소' },
+      { code:'BMTS-AUT-CER',  ppm:'2%',     area:'표피', name:'세라마이드', desc:'피부 장벽 강화, 수분 손실 방지, 각질 완화' },
+      { code:'BMTS-AUT-PAN',  ppm:'5%',     area:'표피', name:'판테놀', desc:'피부 재생 촉진, 자극 완화, 보습 유지' }
+    ],
+    S: [
+      { code:'BMTS-AUT-CEN',  ppm:'1%',     area:'진체', name:'센텔라아시아티카', desc:'진정 효과, 상처 치유, 콜라겐 합성 촉진' },
+      { code:'BMTS-AUT-ALL',  ppm:'0.5%',   area:'표피', name:'알란토인', desc:'세포 재생 촉진, 자극 완화, 피부 진정' },
+      { code:'BMTS-AUT-BG',   ppm:'0.3%',   area:'표피', name:'베타글루칸', desc:'면역력 강화, 장벽 개선, 항염 효과' }
+    ],
+    R: [
+      { code:'BMTS-AUT-RET',  ppm:'0.1%',   area:'진체', name:'레티놀', desc:'세포 재생 촉진, 주름 개선, 피부결 정돈' },
+      { code:'BMTS-AUT-AHA',  ppm:'5%',     area:'표피', name:'알파하이드록시산', desc:'각질 제거, 피부결 개선, 밝기 증진' },
+      { code:'BMTS-AUT-VCE',  ppm:'3%',     area:'표피', name:'비타민C 에스터', desc:'항산화, 브라이트닝, 콜라겐 합성 지원' }
+    ],
+    P: [
+      { code:'BMTS-AUT-ARB',  ppm:'2%',     area:'표피', name:'알부틴', desc:'멜라닌 생성 억제, 기미·잡티 개선, 피부톤 균일화' },
+      { code:'BMTS-AUT-NIA',  ppm:'2%',     area:'표피', name:'나이아신아마이드', desc:'색소 전달 차단, 브라이트닝, 피부결 개선' },
+      { code:'BMTS-AUT-VC',   ppm:'5%',     area:'진체', name:'비타민C', desc:'항산화·미백, 광채 부여, 콜라겐 생성 촉진' }
+    ],
+    N: [
+      { code:'BMTS-AUT-SOD1', ppm:'0.5ppm', area:'진체', name:'항산화 효소', desc:'활성산소 제거, 피부 노화 방지, 세포 보호' },
+      { code:'BMTS-AUT-RES',  ppm:'0.5%',   area:'진체', name:'레스베라트롤', desc:'항산화, 세포 보호, 노화 방지' },
+      { code:'BMTS-AUT-COQ',  ppm:'0.1%',   area:'진체', name:'코엔자임Q10', desc:'에너지 생성, 항산화, 세포 활성화' }
+    ],
+    W: [
+      { code:'BMTS-AUT-PEP',  ppm:'5ppm',   area:'진체', name:'신호 펩타이드', desc:'콜라겐·엘라스틴 합성 촉진, 주름 개선, 탄력 증진' },
+      { code:'BMTS-AUT-EGF',  ppm:'1ppm',   area:'표피', name:'상피세포 성장인자', desc:'표피 재생 촉진, 피부결 개선, 세포 회복력 강화' },
+      { code:'BMTS-AUT-IGF1', ppm:'0.15ppm',area:'진체', name:'인슐린유사 성장인자', desc:'세포 성장 및 재생력 증진, 노화 억제' }
+    ],
+    F: [
+      { code:'BMTS-AUT-COL',  ppm:'3%',     area:'진체', name:'가수분해 콜라겐', desc:'피부 보습 강화, 탄력 보조, 노화 예방' },
+      { code:'BMTS-AUT-SOD1', ppm:'0.5ppm', area:'진체', name:'항산화 효소', desc:'활성산소 제거, 피부 노화 방지, 세포 보호' },
+      { code:'BMTS-AUT-VCE',  ppm:'3%',     area:'표피', name:'비타민C 에스터', desc:'예방적 항산화, 콜라겐 보조, 광채 유지' }
+    ]
+  };
+
+  const PRODUCTS_MAP = {
+    O: [
+      { name:'보닉스 휴그로 밸런싱 세럼', price:'198,000원', tags:['피지조절','모공케어'], img:'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=70' },
+      { name:'보닉스 레쥬티 리보 세럼', price:'220,000원', tags:['깊은주름','탄력'], img:'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=70' },
+      { name:'보닉스 퓨어C 브라이트닝', price:'176,000원', tags:['브라이트닝'], img:'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=600&q=70' }
+    ],
+    D: [
+      { name:'보닉스 휴그로 딥모이스트 크림', price:'220,000원', tags:['집중보습','수분공급'], img:'https://images.unsplash.com/photo-1619994403073-2cec844b8e63?auto=format&fit=crop&w=600&q=70' },
+      { name:'보닉스 세라마이드 배리어 세럼', price:'198,000원', tags:['장벽강화'], img:'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=70' },
+      { name:'보닉스 펩타이드 미스트', price:'176,000원', tags:['수분','진정'], img:'https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=600&q=70' }
+    ],
+    S: [
+      { name:'보닉스 센텔라 진정 앰플', price:'198,000원', tags:['진정','민감'], img:'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=600&q=70' },
+      { name:'보닉스 배리어 리페어 크림', price:'220,000원', tags:['장벽강화','진정'], img:'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=600&q=70' },
+      { name:'보닉스 큐어 C', price:'220,000원', tags:['각질케어','흡착세럼'], img:'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=600&q=70' }
+    ],
+    R: [
+      { name:'보닉스 레티놀 리뉴 세럼', price:'242,000원', tags:['항노화','재생'], img:'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=70' },
+      { name:'보닉스 레쥬티 리보 세럼', price:'220,000원', tags:['깊은주름'], img:'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=70' },
+      { name:'보닉스 에이지리스 크림', price:'198,000원', tags:['탄력','안티에이징'], img:'https://images.unsplash.com/photo-1619994403073-2cec844b8e63?auto=format&fit=crop&w=600&q=70' }
+    ]
+  };
+
+  function getIngredients(m, p, e, s) {
+    const mainKey = p === 'P' ? 'P' : (e === 'W' ? 'W' : m);
+    const list = INGREDIENTS_MAP[mainKey] || INGREDIENTS_MAP[m];
+    return list;
+  }
+
+  function getProducts(m, s) {
+    const key = s === 'S' ? 'S' : (m === 'O' ? 'O' : 'D');
+    return PRODUCTS_MAP[key] || PRODUCTS_MAP['D'];
+  }
+
+  function renderIngredients(items) {
+    return items.map(function(item){
+      return '<div class="pss-ingredient-card">' +
+        '<div class="pss-ingredient-card__top">' +
+          '<div class="pss-ingredient-card__icon">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.58 16.5h12.85"/></svg>' +
+          '</div>' +
+          '<span class="pss-ingredient-card__ppm">' + item.ppm + '</span>' +
+        '</div>' +
+        '<p class="pss-ingredient-card__code">' + item.code + '</p>' +
+        '<p class="pss-ingredient-card__area">' + item.area + '</p>' +
+        '<p class="pss-ingredient-card__name">' + item.name + '</p>' +
+        '<p class="pss-ingredient-card__desc">' + item.desc + '</p>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderProducts(items) {
+    return items.map(function(item){
+      const tagHtml = item.tags.map(function(t){ return '<span class="prod-img-tag">' + t + '</span>'; }).join('');
+      return '<div class="prod-card">' +
+        '<div class="prod-card__img-wrap">' +
+          '<img class="prod-card__img" src="' + (item.img || '') + '" alt="' + item.name + '" loading="lazy" />' +
+          '<div class="prod-card__img-tags">' + tagHtml + '</div>' +
+        '</div>' +
+        '<div class="prod-card__body">' +
+          '<h3 class="prod-card__name">' + item.name + '</h3>' +
+          '<div class="prod-card__meta"><span class="prod-card__price">' + item.price + '</span></div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderRecCards(items) {
+    return items.map(function(item){
+      var sub = item.tags && item.tags.length ? item.tags[0] : 'SKIN CARE';
+      var safeName = (item.name || '').replace(/"/g, '&quot;');
+      var safeImg  = (item.img  || '').replace(/"/g, '&quot;');
+      var tagsVal  = (item.tags || []).join(',');
+      return '<a href="#" class="pss-rec-card"' +
+        ' data-prd-name="' + safeName + '"' +
+        ' data-prd-price="' + (item.price || '') + '"' +
+        ' data-prd-img="'  + safeImg  + '"' +
+        ' data-prd-tags="' + tagsVal  + '">' +
+        '<div class="pss-rec-card__top">' +
+          '<p class="pss-rec-card__label">KMEDITOUR<br>' + sub + '</p>' +
+          '<hr class="pss-rec-card__sep">' +
+          '<strong class="pss-rec-card__name">' + item.name + '</strong>' +
+        '</div>' +
+        '<div class="pss-rec-card__img">' +
+          '<img src="' + (item.img || '') + '" alt="' + item.name + '" loading="lazy">' +
+        '</div>' +
+      '</a>';
+    }).join('');
+  }
+
+  function renderBadges(m, p, e, s) {
+    const code = buildCode(m, p, e, s);
+    const map = [
+      { letter: m, label: MOISTURE_TEXT[m] },
+      { letter: s, label: SENSITIVE_TEXT[s] },
+      { letter: p, label: PIGMENT_TEXT[p] },
+      { letter: e, label: ELASTIC_TEXT[e] }
+    ];
+    return map.map(function(b){
+      return '<span class="pss-badge pss-badge--' + b.letter + '">' + b.letter + ' ' + b.label + '</span>';
+    }).join('');
+  }
+
+  /* ── Result modal close (모바일) ── */
+  var resultCloseBtn = document.getElementById('pssResultClose');
+  if (resultCloseBtn) {
+    resultCloseBtn.addEventListener('click', function() {
+      var result = document.getElementById('pssResult');
+      result.classList.remove('is-visible');
+      result.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('pss-modal-open');
+      var quizEl = document.querySelector('.pss-quiz');
+      if (quizEl) quizEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  /* ── Analyze button click ── */
+  document.getElementById('analyzeBtn').addEventListener('click', function(){
+    const m = selections.moisture;
+    const p = selections.pigment;
+    const e = selections.elastic;
+    const s = selections.sensitive;
+
+    /* Populate result */
+    document.getElementById('resultCode').textContent = buildCode(m, p, e, s);
+    document.getElementById('resultKr').textContent   = buildKrText(m, p, e, s);
+    document.getElementById('resultBadges').innerHTML = renderBadges(m, p, e, s);
+    document.getElementById('aiComment').textContent  = buildComment(m, p, e, s);
+
+    const tags = buildFocusTags(m, p, e, s);
+    document.getElementById('aiTags').innerHTML = tags.map(function(t){
+      return '<span class="pss-focus-tag">' + t + '</span>';
+    }).join('');
+
+    document.getElementById('ingredientGrid').innerHTML = renderIngredients(getIngredients(m, p, e, s));
+    document.getElementById('recStrip').innerHTML       = renderRecCards(getProducts(m, s));
+
+    /* Show result section */
+    const result = document.getElementById('pssResult');
+    result.classList.add('is-visible');
+    result.setAttribute('aria-hidden', 'false');
+
+    /* 모바일: 모달 오버레이 / 데스크탑: 스크롤 */
+    if (window.matchMedia('(max-width: 860px)').matches) {
+      document.body.classList.add('pss-modal-open');
+    } else {
+      setTimeout(function(){
+        result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    /* 결과 상태 저장 (product.html 이동 후 뒤로가기 복원용) */
+    if (window.pssState) pssState.save(selections);
+  });
+
+  /* ── Solution Tab Switching (스킨 솔루션 ↔ 헤어 솔루션) ── */
+  var solTabs = document.querySelectorAll('.tab-pill__btn[data-tab]');
+  var quizSection = document.querySelector('.pss-quiz');
+  var resultSection = document.getElementById('pssResult');
+  var hairSection = document.getElementById('pssHairSection');
+  var stepsEl = document.querySelector('.pss-steps');
+  var heroTitle = document.querySelector('.page-hero__title');
+  var heroDesc = document.querySelector('.page-hero__sub');
+  var breadcrumbCurrent = document.getElementById('pss-breadcrumb-current');
+
+  solTabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var tabType = this.dataset.tab;
+      solTabs.forEach(function(t) {
+        t.classList.remove('is-active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      this.classList.add('is-active');
+      this.setAttribute('aria-selected', 'true');
+
+      if (tabType === 'hair') {
+        quizSection.style.display = 'none';
+        resultSection.style.display = 'none';
+        stepsEl.style.display = 'none';
+        document.body.classList.remove('pss-modal-open');
+        hairSection.classList.add('is-visible');
+        hairSection.setAttribute('aria-hidden', 'false');
+        if (breadcrumbCurrent) breadcrumbCurrent.textContent = '헤어 솔루션';
+        heroTitle.textContent = '나의 헤어 케어 솔루션';
+        heroDesc.innerHTML = '두피 고민별 맞춤 성분과 추천 제품을 확인하세요.<br>전문 성분 데이터를 기반으로 최적의 헤어 케어를 제안합니다.';
+      } else {
+        quizSection.style.display = '';
+        resultSection.style.display = '';
+        stepsEl.style.display = '';
+        hairSection.classList.remove('is-visible');
+        hairSection.setAttribute('aria-hidden', 'true');
+        if (breadcrumbCurrent) breadcrumbCurrent.textContent = '스킨 솔루션';
+        heroTitle.textContent = '나의 피부 솔루션 찾기';
+        heroDesc.innerHTML = '4가지 항목에서 본인의 피부에 해당하는 특성을 선택하세요.<br>AI가 맞춤 피부 타입과 케어 솔루션을 분석해 드립니다.';
+        /* 스킨 탭으로 복귀 시 결과가 표시 중이면 모달 상태 복원 */
+        if (resultSection.classList.contains('is-visible') && window.matchMedia('(max-width: 860px)').matches) {
+          document.body.classList.add('pss-modal-open');
+        }
+      }
+    });
+  });
+
+  /* ── Hair Slider ── */
+  var hairTrack = document.getElementById('pssHairTrack');
+  var hairSlides = hairTrack ? hairTrack.querySelectorAll('.pss-hair-slide') : [];
+  var hairTabBtns = document.querySelectorAll('.pss-hair-tab');
+  var hairDots = document.querySelectorAll('.pss-hair-dot');
+  var hairPrev = document.getElementById('pssHairPrev');
+  var hairNext = document.getElementById('pssHairNext');
+  var currentHairSlide = 0;
+
+  function goHairSlide(idx) {
+    if (idx < 0 || idx >= hairSlides.length) return;
+    currentHairSlide = idx;
+    if (hairTrack) hairTrack.style.transform = 'translateX(-' + (idx * 100) + '%)';
+    hairTabBtns.forEach(function(t, i) {
+      t.classList.toggle('is-active', i === idx);
+      t.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+    });
+    hairDots.forEach(function(d, i) {
+      d.classList.toggle('is-active', i === idx);
+    });
+    if (hairPrev) hairPrev.disabled = idx === 0;
+    if (hairNext) hairNext.disabled = idx === hairSlides.length - 1;
+  }
+
+  hairTabBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() { goHairSlide(parseInt(this.dataset.htab)); });
+  });
+  hairDots.forEach(function(dot) {
+    dot.addEventListener('click', function() { goHairSlide(parseInt(this.dataset.htab)); });
+  });
+  if (hairPrev) hairPrev.addEventListener('click', function() { goHairSlide(currentHairSlide - 1); });
+  if (hairNext) hairNext.addEventListener('click', function() { goHairSlide(currentHairSlide + 1); });
+
+  goHairSlide(0);
+
+  /* ── Product card → product.html ── */
+  document.addEventListener('click', function(e) {
+    var card = e.target.closest('.prod-card');
+    if (!card || !card.closest('.pss-products-grid')) return;
+
+    var nameEl  = card.querySelector('.prod-card__name');
+    var priceEl = card.querySelector('.prod-card__price');
+    var imgEl   = card.querySelector('.prod-card__img');
+    var tagEls  = card.querySelectorAll('.prod-img-tag');
+
+    var name     = nameEl  ? nameEl.textContent.trim()  : '';
+    var priceStr = priceEl ? priceEl.textContent.trim() : '';
+    var img      = imgEl   ? imgEl.src : '';
+    var tags     = Array.from(tagEls).map(function(t){ return t.textContent.trim(); });
+    var price    = parseInt(priceStr.replace(/[^0-9]/g, '')) || 0;
+
+    sessionStorage.setItem('cosm_product', JSON.stringify({
+      name:     name,
+      price:    price,
+      imgs:     img ? [img] : [],
+      img:      img,
+      tags:     tags,
+      category: '스킨케어',
+    }));
+    window.location.href = 'product.html';
+  });
+
+  /* ── rec-card (분석 결과 추천 제품) → product.html ── */
+  document.addEventListener('click', function(e) {
+    var card = e.target.closest('.pss-rec-card');
+    if (!card) return;
+    e.preventDefault();
+    var name     = card.getAttribute('data-prd-name') || '';
+    var priceStr = card.getAttribute('data-prd-price') || '';
+    var img      = card.getAttribute('data-prd-img') || '';
+    var tagsStr  = card.getAttribute('data-prd-tags') || '';
+    var tags     = tagsStr ? tagsStr.split(',').filter(Boolean) : [];
+    var price    = parseInt(priceStr.replace(/[^0-9]/g, '')) || 0;
+    sessionStorage.setItem('cosm_product', JSON.stringify({
+      name:     name,
+      price:    price,
+      img:      img,
+      imgs:     img ? [img] : [],
+      tags:     tags,
+      category: '스킨케어'
+    }));
+    window.location.href = 'product.html';
+  });
+
+  /* ── Reset ── */
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    /* Clear selections & saved state */
+    Object.keys(selections).forEach(function(k){ selections[k] = null; });
+    if (window.pssState) pssState.clear();
+
+    /* Uncheck all radios */
+    document.querySelectorAll('.pss-option__input').forEach(function(r){ r.checked = false; });
+
+    /* Remove answered state */
+    document.querySelectorAll('.pss-category').forEach(function(c){ c.classList.remove('is-answered'); });
+
+    /* Reset steps */
+    document.querySelectorAll('.pss-step').forEach(function(s){ s.classList.remove('is-done', 'is-active'); });
+
+    /* Reset quiz slider to slide 0 */
+    goQuizSlide(0);
+
+    /* Disable button */
+    const btn = document.getElementById('analyzeBtn');
+    btn.disabled = true;
+    btn.setAttribute('aria-disabled', 'true');
+    btn.classList.remove('is-ready');
+    const hint = document.getElementById('analyzeHint');
+    if (hint) hint.style.opacity = '1';
+
+    /* Hide result */
+    const result = document.getElementById('pssResult');
+    result.classList.remove('is-visible');
+    result.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('pss-modal-open');
+
+    /* Scroll to quiz */
+    document.querySelector('.pss-quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  /* ── 저장된 퀴즈 결과 복원 (product.html 뒤로가기 시) ── */
+  (function restoreSavedResult() {
+    if (!window.pssState) return;
+    var saved = pssState.get();
+    if (!saved) return;
+
+    var rm = saved.moisture, rp = saved.pigment, re = saved.elastic, rs = saved.sensitive;
+
+    /* selections 복원 */
+    selections.moisture = rm; selections.pigment = rp;
+    selections.elastic  = re; selections.sensitive = rs;
+
+    /* 라디오·is-answered·is-done 복원 */
+    document.querySelectorAll('.pss-option__input').forEach(function(input) {
+      var cat = input.closest('.pss-category').dataset.cat;
+      if (input.value === saved[cat]) {
+        input.checked = true;
+        input.closest('.pss-category').classList.add('is-answered');
+        var stepEl = document.getElementById(STEP_IDS[cat]);
+        if (stepEl) stepEl.classList.add('is-done');
+      }
+    });
+
+    /* 분석 버튼 활성화 */
+    var btn = document.getElementById('analyzeBtn');
+    if (btn) { btn.disabled = false; btn.removeAttribute('aria-disabled'); btn.classList.add('is-ready'); }
+
+    /* 결과 렌더링 */
+    document.getElementById('resultCode').textContent = buildCode(rm, rp, re, rs);
+    document.getElementById('resultKr').textContent   = buildKrText(rm, rp, re, rs);
+    document.getElementById('resultBadges').innerHTML = renderBadges(rm, rp, re, rs);
+    document.getElementById('aiComment').textContent  = buildComment(rm, rp, re, rs);
+
+    var focusTags = buildFocusTags(rm, rp, re, rs);
+    document.getElementById('aiTags').innerHTML = focusTags.map(function(t){
+      return '<span class="pss-focus-tag">' + t + '</span>';
+    }).join('');
+
+    document.getElementById('ingredientGrid').innerHTML = renderIngredients(getIngredients(rm, rp, re, rs));
+    document.getElementById('recStrip').innerHTML       = renderRecCards(getProducts(rm, rs));
+
+    /* 결과 섹션 표시 */
+    var resultEl = document.getElementById('pssResult');
+    resultEl.classList.add('is-visible');
+    resultEl.setAttribute('aria-hidden', 'false');
+    if (window.matchMedia('(max-width: 860px)').matches) {
+      document.body.classList.add('pss-modal-open');
+    }
+  }());
+
+})();`,
+`(function(){
+  const trigger = document.getElementById('loginTrigger');
+  const modal   = document.getElementById('loginModal');
+  const close   = document.getElementById('loginClose');
+  const backdrop= document.getElementById('loginBackdrop');
+  function openModal(){ modal.classList.add('is-open'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; var first=modal.querySelector('input:not([type=hidden]),button:not([disabled])'); if(first) setTimeout(function(){first.focus();},50); }
+  function closeModal(){ modal.classList.remove('is-open'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow=''; if(trigger) trigger.focus(); }
+  if (trigger) trigger.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
+  const gnbLoginBtn = document.querySelector('.gnb-login-btn');
+  if (gnbLoginBtn) gnbLoginBtn.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
+  close.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  const pwdInput = document.getElementById('loginPassword');
+  const pwdToggle = document.getElementById('loginPwdToggle');
+  const eyeIcon = document.getElementById('eyeIcon');
+  const eyeOffSvg = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  const eyeOnSvg = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  if (pwdToggle) pwdToggle.addEventListener('click', function(){
+    const isHidden = pwdInput.type === 'password';
+    pwdInput.type = isHidden ? 'text' : 'password';
+    eyeIcon.innerHTML = isHidden ? eyeOffSvg : eyeOnSvg;
+  });
+})();`,
+];
+
+export default function SkinSolPage() {
+  return (
+    <SiteLayout headerVariant="light" mobileActive="skin-sol" pageSrc={["/js/pss-state.js"]} pageInline={PAGE_INLINE} afterMain={
+        <>
+        {/* ============================== 문의 (CONTACT) ============================== */}
+        </>
+      }>
+      {/* ── HERO (다크: 텍스트만) ── */}
+      <section className="page-hero page-hero--white page-hero--bc">
+        <div className="wrap">
+          <p className="eyebrow eyebrow--center">
+            Personal Skin Solution
+          </p>
+          <h1 className="page-hero__title">
+            나의 피부 솔루션 찾기
+          </h1>
+          <p className="page-hero__sub">
+            4가지 항목에서 본인의 피부에 해당하는 특성을 선택하세요.
+            <br />
+            AI가 맞춤 피부 타입과 케어 솔루션을 분석해 드립니다.
+          </p>
+          <nav className="bc-nav" aria-label="현재 위치">
+            <Link href="/">
+              홈
+            </Link>
+            <span className="bc-sep" aria-hidden="true">
+              /
+            </span>
+            <span>
+              뷰티
+            </span>
+            <span className="bc-sep" aria-hidden="true">
+              /
+            </span>
+            <span aria-current="page">
+              나의 피부 솔루션
+            </span>
+          </nav>
+        </div>
+      </section>
+      {/* ── SOL-NAV (흰 배경: 탭 · 경로 · 스텝) ── */}
+      <div className="pss-sol-nav">
+        <div className="wrap">
+          <div className="pss-sol-tabs" role="tablist" aria-label="솔루션 선택">
+            <button className="tab-pill__btn is-active" role="tab" aria-selected="true" data-tab="skin">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 3 13.5 8.5 19 10 13.5 11.5 12 17 10.5 11.5 5 10 10.5 8.5Z" />
+                <path d="M19 3 19.6 4.9 21.5 5.5 19.6 6.1 19 8 18.4 6.1 16.5 5.5 18.4 4.9Z" />
+                <path d="M5 16 5.5 17.5 7 18 5.5 18.5 5 20 4.5 18.5 3 18 4.5 17.5Z" />
+              </svg>
+              스킨 솔루션
+            </button>
+            <button className="tab-pill__btn" role="tab" aria-selected="false" data-tab="hair">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M2 7c2-3 4-3 6 0s4 3 6 0 4-3 6 0" />
+                <path d="M2 12c2-3 4-3 6 0s4 3 6 0 4-3 6 0" />
+                <path d="M2 17c2-3 4-3 6 0s4 3 6 0 4-3 6 0" />
+              </svg>
+              헤어 솔루션
+            </button>
+          </div>
+          <nav className="pss-breadcrumb" aria-label="현재 위치">
+            <Link href="/">
+              홈
+            </Link>
+            <span className="pss-breadcrumb__sep" aria-hidden="true">
+              /
+            </span>
+            <span>
+              뷰티
+            </span>
+            <span className="pss-breadcrumb__sep" aria-hidden="true">
+              /
+            </span>
+            <span aria-current="page" id="pss-breadcrumb-current">
+              스킨 솔루션
+            </span>
+          </nav>
+          <div className="pss-steps" role="group" aria-label="진행 단계">
+            <div className="pss-step" id="step-moisture">
+              <div className="pss-step__num">
+                01
+              </div>
+              <span className="pss-step__label">
+                수분
+              </span>
+            </div>
+            <div className="pss-step__sep" aria-hidden="true" />
+            <div className="pss-step" id="step-pigment">
+              <div className="pss-step__num">
+                02
+              </div>
+              <span className="pss-step__label">
+                색소
+              </span>
+            </div>
+            <div className="pss-step__sep" aria-hidden="true" />
+            <div className="pss-step" id="step-elastic">
+              <div className="pss-step__num">
+                03
+              </div>
+              <span className="pss-step__label">
+                탄력
+              </span>
+            </div>
+            <div className="pss-step__sep" aria-hidden="true" />
+            <div className="pss-step" id="step-sensitive">
+              <div className="pss-step__num">
+                04
+              </div>
+              <span className="pss-step__label">
+                민감도
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* ── QUIZ ── */}
+      <section className="pss-quiz section--surface">
+        {/* 분석하기 버튼 */}
+        <div className="wrap pss-wrap pss-analyze-wrap">
+          <div className="pss-analyze">
+            <p className="pss-analyze__hint" id="analyzeHint">
+              4가지 항목을 모두 선택하면 분석 버튼이 활성화됩니다.
+            </p>
+            <button className="btn btn--primary pss-analyze__btn" id="analyzeBtn" disabled aria-disabled="true">
+              AI 피부 타입 분석하기
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div className="pss-quiz-outer">
+          <div className="pss-quiz-viewport" id="pssQuizViewport">
+            <div className="pss-quiz-track" id="pssQuizTrack">
+              {/* Slide 1: 수분 */}
+              <div className="pss-quiz-slide">
+                <div className="wrap pss-wrap">
+                  <div className="pss-category" id="cat-moisture" data-cat="moisture">
+                    <div className="pss-category__header">
+                      <div className="pss-category__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="pss-category__num">
+                          01
+                        </p>
+                        <h2 className="pss-category__title">
+                          수분
+                        </h2>
+                        <p className="pss-category__desc">
+                          피부 수분의 균형 상태를 선택해 주세요
+                        </p>
+                      </div>
+                      <div className="pss-category__done" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="pss-options">
+                      <label className="pss-option">
+                        <input type="radio" name="moisture" value="D" className="pss-option__input" />
+                        <div className="pss-option__card">
+                          <div className="pss-option__icon pss-icon--blue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                            </svg>
+                          </div>
+                          <h3 className="pss-option__name">
+                            건성
+                          </h3>
+                          <p className="pss-option__text">
+                            피부 수분이 부족하여 당김과 각질이 생기기 쉬운 타입
+                          </p>
+                          <div className="pss-option__check" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </div>
+                        </div>
+                      </label>
+                      <label className="pss-option">
+                        <input type="radio" name="moisture" value="O" className="pss-option__input" />
+                        <div className="pss-option__card">
+                          <div className="pss-option__icon pss-icon--amber">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <circle cx="12" cy="12" r="5" />
+                              <line x1="12" y1="1" x2="12" y2="3" />
+                              <line x1="12" y1="21" x2="12" y2="23" />
+                              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                              <line x1="1" y1="12" x2="3" y2="12" />
+                              <line x1="21" y1="12" x2="23" y2="12" />
+                              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                            </svg>
+                          </div>
+                          <h3 className="pss-option__name">
+                            지성
+                          </h3>
+                          <p className="pss-option__text">
+                            피지 분비가 활발하여 번들거림이 나타나는 타입
+                          </p>
+                          <div className="pss-option__check" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* Slide 2: 색소 */}
+              <div className="pss-quiz-slide">
+                <div className="wrap pss-wrap">
+                  <div className="pss-category" id="cat-pigment" data-cat="pigment">
+                    <div className="pss-category__header">
+                      <div className="pss-category__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                          <line x1="9" y1="9" x2="9.01" y2="9" />
+                          <line x1="15" y1="9" x2="15.01" y2="9" />
+                          <circle cx="9" cy="6" r="1" fill="currentColor" stroke="none" />
+                          <circle cx="15" cy="5" r="0.8" fill="currentColor" stroke="none" />
+                          <circle cx="7" cy="11" r="0.7" fill="currentColor" stroke="none" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="pss-category__num">
+                          02
+                        </p>
+                        <h2 className="pss-category__title">
+                          색소
+                        </h2>
+                        <p className="pss-category__desc">
+                          피부 색소 침착 정도를 선택해 주세요
+                        </p>
+                      </div>
+                      <div className="pss-category__done" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="pss-options">
+                      <label className="pss-option">
+                        <input type="radio" name="pigment" value="P" className="pss-option__input" />
+                        <div className="pss-option__card">
+                          <div className="pss-option__icon pss-icon--purple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <circle cx="12" cy="12" r="10" />
+                              <circle cx="9" cy="10" r="1" fill="currentColor" stroke="none" />
+                              <circle cx="15" cy="9" r="0.8" fill="currentColor" stroke="none" />
+                              <circle cx="7" cy="14" r="0.8" fill="currentColor" stroke="none" />
+                              <circle cx="16" cy="14" r="1" fill="currentColor" stroke="none" />
+                              <circle cx="12" cy="7" r="0.7" fill="currentColor" stroke="none" />
+                            </svg>
+                          </div>
+                          <h3 className="pss-option__name">
+                            색소침착
+                          </h3>
+                          <p className="pss-option__text">
+                            멜라닌 생성이 활발하여 기미·잡티가 생기기 쉬운 타입
+                          </p>
+                          <div className="pss-option__check" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </div>
+                        </div>
+                      </label>
+                      <label className="pss-option">
+                        <input type="radio" name="pigment" value="N" className="pss-option__input" />
+                        <div className="pss-option__card">
+                          <div className="pss-option__icon pss-icon--teal">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <circle cx="12" cy="12" r="10" />
+                              <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                              <line x1="9" y1="9" x2="9.01" y2="9" />
+                              <line x1="15" y1="9" x2="15.01" y2="9" />
+                            </svg>
+                          </div>
+                          <h3 className="pss-option__name">
+                            비색소
+                          </h3>
+                          <p className="pss-option__text">
+                            피부톤이 비교적 균일하고 색소 침착이 적은 타입
+                          </p>
+                          <div className="pss-option__check" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* Slide 3: 탄력 */}
+              <div className="pss-quiz-slide">
+                <div className="wrap pss-wrap">
+                  <div className="pss-category" id="cat-elastic" data-cat="elastic">
+                    <div className="pss-category__header">
+                      <div className="pss-category__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M2 12c0-3 2-5 5-5s5 2 5 5-2 5-5 5" />
+                          <path d="M12 12c0-3 2-5 5-5s5 2 5 5-2 5-5 5" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="pss-category__num">
+                          03
+                        </p>
+                        <h2 className="pss-category__title">
+                          탄력
+                        </h2>
+                        <p className="pss-category__desc">
+                          피부 탄력과 주름 정도를 선택해 주세요
+                        </p>
+                      </div>
+                      <div className="pss-category__done" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="pss-options">
+                      <label className="pss-option">
+                        <input type="radio" name="elastic" value="W" className="pss-option__input" />
+                        <div className="pss-option__card">
+                          <div className="pss-option__icon pss-icon--wave">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M2 12c1.5-3 3.5-3 5 0s3.5 3 5 0 3.5-3 5 0" />
+                              <path d="M2 17c1.5-3 3.5-3 5 0s3.5 3 5 0 3.5-3 5 0" />
+                            </svg>
+                          </div>
+                          <h3 className="pss-option__name">
+                            주름성
+                          </h3>
+                          <p className="pss-option__text">
+                            탄력이 저하되어 주름 처짐이 나타나기 쉬운 타입
+                          </p>
+                          <div className="pss-option__check" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </div>
+                        </div>
+                      </label>
+                      <label className="pss-option">
+                        <input type="radio" name="elastic" value="F" className="pss-option__input" />
+                        <div className="pss-option__card">
+                          <div className="pss-option__icon pss-icon--green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                              <polyline points="16 7 22 7 22 13" />
+                            </svg>
+                          </div>
+                          <h3 className="pss-option__name">
+                            탄력성
+                          </h3>
+                          <p className="pss-option__text">
+                            피부 탄력이 좋고 주름이 적은 건강한 타입
+                          </p>
+                          <div className="pss-option__check" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* Slide 4: 민감도 */}
+              <div className="pss-quiz-slide">
+                <div className="wrap pss-wrap">
+                  <div className="pss-category" id="cat-sensitive" data-cat="sensitive">
+                    <div className="pss-category__header">
+                      <div className="pss-category__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="pss-category__num">
+                          04
+                        </p>
+                        <h2 className="pss-category__title">
+                          민감도
+                        </h2>
+                        <p className="pss-category__desc">
+                          외부 자극에 대한 반응 정도를 선택해 주세요
+                        </p>
+                      </div>
+                      <div className="pss-category__done" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="pss-options">
+                      <label className="pss-option">
+                        <input type="radio" name="sensitive" value="S" className="pss-option__input" />
+                        <div className="pss-option__card">
+                          <div className="pss-option__icon pss-icon--rose">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                              <line x1="12" y1="8" x2="12" y2="12" />
+                              <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                          </div>
+                          <h3 className="pss-option__name">
+                            민감성
+                          </h3>
+                          <p className="pss-option__text">
+                            외부 자극에 쉽게 반응하며 붉어짐이 나타나는 타입
+                          </p>
+                          <div className="pss-option__check" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </div>
+                        </div>
+                      </label>
+                      <label className="pss-option">
+                        <input type="radio" name="sensitive" value="R" className="pss-option__input" />
+                        <div className="pss-option__card">
+                          <div className="pss-option__icon pss-icon--green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                              <polyline points="9 12 11 14 15 10" />
+                            </svg>
+                          </div>
+                          <h3 className="pss-option__name">
+                            저항성
+                          </h3>
+                          <p className="pss-option__text">
+                            외부 자극에 대한 내성이 강한 튼튼한 피부 타입
+                          </p>
+                          <div className="pss-option__check" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* /pss-quiz-track */}
+          </div>
+          {/* /pss-quiz-viewport */}
+        </div>
+        {/* /pss-quiz-outer */}
+      </section>
+      {/* ── RESULT ── */}
+      <section className="pss-result" id="pssResult" aria-hidden="true">
+        {/* aria-live region: 결과 표시 시 JS에서 aria-hidden="false" 전환 후 스크린리더에 알림 */}
+        {/* 모바일 전용 상단 바 (다시 분석 + 닫기 버튼) */}
+        <div className="pss-result__modal-bar">
+          <span className="pss-result__modal-title">
+            피부 타입 분석 결과
+          </span>
+          <button className="pss-result__close-btn" id="pssResultClose" aria-label="닫기">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div className="wrap pss-wrap">
+          {/* Result Header */}
+          <div className="pss-result__header" data-reveal="">
+            <button className="pss-result__reset-btn" id="resetBtn" aria-label="다시 분석하기">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="15" height="15">
+                <polyline points="1 4 1 10 7 10" />
+                <path d="M3.51 15a9 9 0 1 0 .49-3" />
+              </svg>
+              다시 분석하기
+            </button>
+            <p className="pss-result__label">
+              분석 완료
+            </p>
+            <div className="pss-result__code" id="resultCode">
+              OSPF
+            </div>
+            <p className="pss-result__kr" id="resultKr">
+              지성 · 민감성 · 색소침착 · 탄력성
+            </p>
+            <div className="pss-result__badges" id="resultBadges" />
+          </div>
+          <div className="pss-divider" aria-hidden="true" />
+          {/* AI Comment */}
+          <div className="pss-ai-card" data-reveal="">
+            <div className="pss-ai-card__header">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74z" />
+              </svg>
+              <span>
+                AI 분석 코멘트
+              </span>
+              <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74z" />
+              </svg>
+            </div>
+            <p className="pss-ai-card__text" id="aiComment" />
+            <div className="pss-ai-card__focus">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+                <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74z" />
+              </svg>
+              <span className="pss-ai-card__focus-label">
+                집중 케어 항목
+              </span>
+              <div className="pss-focus-tags" id="aiTags" />
+            </div>
+          </div>
+          {/* Recommended Ingredients */}
+          <div data-reveal="">
+            <h3 className="pss-section-title pss-section-title--city">
+              추천 성분
+            </h3>
+            <div className="pss-ingredients-grid" id="ingredientGrid" />
+          </div>
+          <div className="pss-divider" aria-hidden="true" />
+          {/* Recommended Products */}
+          <div data-reveal="">
+            <h3 className="pss-section-title pss-section-title--city">
+              추천 제품
+              <Link href="/cosmetic" className="pss-section-title__link">
+                SEE ALL
+              </Link>
+            </h3>
+            <div className="pss-rec-strip" id="recStrip" />
+          </div>
+          <div className="pss-divider" aria-hidden="true" />
+          {/* CTA */}
+          <div className="pss-cta" data-reveal="">
+            <div className="pss-cta__inner">
+              <div className="pss-cta__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M3 9h18" />
+                  <path d="M9 21V9" />
+                </svg>
+              </div>
+              <div className="pss-cta__text">
+                <h3>
+                  더 정밀한 피부 분석을 원하시나요?
+                </h3>
+                <p>
+                  휴그로센터에서 전문 장비를 이용한 정밀 피부 분석을 받아보세요.
+                </p>
+              </div>
+              <Link href="/center" className="btn btn--primary">
+                휴그로센터 알아보기 →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* ── HAIR SOLUTION ── */}
+      <section className="pss-hair section--surface" id="pssHairSection" aria-hidden="true">
+        <div className="wrap pss-hair__wrap">
+          {/* 서브탭 */}
+          <div className="pss-hair-tabs" role="tablist" aria-label="두피 고민 선택">
+            <button className="pss-hair-tab is-active" role="tab" aria-selected="true" data-htab="0">
+              탈모 고민
+            </button>
+            <button className="pss-hair-tab" role="tab" aria-selected="false" data-htab="1">
+              지성 두피
+            </button>
+            <button className="pss-hair-tab" role="tab" aria-selected="false" data-htab="2">
+              민감 두피
+            </button>
+          </div>
+          {/* 슬라이더 */}
+          <div className="pss-hair-slider" id="pssHairSlider">
+            <div className="pss-hair-track" id="pssHairTrack">
+              {/* SLIDE 0: 탈모 고민 */}
+              <div className="pss-hair-slide" role="tabpanel" aria-label="탈모 고민">
+                <div className="pss-comment-card">
+                  <p className="pss-comment-card__label">
+                    <span aria-hidden="true">
+                      ✦
+                    </span>
+                    AI 분석 코멘트
+                    <span aria-hidden="true">
+                      ✦
+                    </span>
+                  </p>
+                  <p className="pss-comment-card__body">
+                    두피 밸런스와 모낭 컨디션을 고려한 케어를 통해 건강한 모발 성장 환경 조성에 도움을 줍니다.
+                  </p>
+                  <div className="pss-focus">
+                    <span className="pss-focus__label">
+                      <span aria-hidden="true">
+                        ✦
+                      </span>
+                      집중 케어 항목
+                    </span>
+                    <div className="pss-focus-tags">
+                      <span className="pss-focus-tag">
+                        탈모
+                      </span>
+                      <span className="pss-focus-tag">
+                        모발 가늘어짐
+                      </span>
+                      <span className="pss-focus-tag">
+                        두피 약화
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <h3 className="pss-section-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                    <path d="M10 2v7.31" />
+                    <path d="M14 9.3V1.99" />
+                    <path d="M8.5 2h7" />
+                    <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                    <path d="M5.58 16.5h12.85" />
+                  </svg>
+                  추천 성분
+                </h3>
+                <div className="pss-hair-ings">
+                  <div className="pss-ingredient-card">
+                    <div className="pss-ingredient-card__top">
+                      <div className="pss-ingredient-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10 2v7.31" />
+                          <path d="M14 9.3V1.99" />
+                          <path d="M8.5 2h7" />
+                          <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                          <path d="M5.58 16.5h12.85" />
+                        </svg>
+                      </div>
+                      <span className="pss-ingredient-card__ppm">
+                        2ppm
+                      </span>
+                    </div>
+                    <p className="pss-ingredient-card__code">
+                      BMTS-AUT-VEGF A
+                    </p>
+                    <p className="pss-ingredient-card__area">
+                      두피
+                    </p>
+                    <p className="pss-ingredient-card__name">
+                      혈관내피 성장인자
+                    </p>
+                    <p className="pss-ingredient-card__desc">
+                      모낭 혈류 증가, 모발 성장 환경 개선
+                    </p>
+                  </div>
+                  <div className="pss-ingredient-card">
+                    <div className="pss-ingredient-card__top">
+                      <div className="pss-ingredient-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10 2v7.31" />
+                          <path d="M14 9.3V1.99" />
+                          <path d="M8.5 2h7" />
+                          <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                          <path d="M5.58 16.5h12.85" />
+                        </svg>
+                      </div>
+                      <span className="pss-ingredient-card__ppm">
+                        0.5ppm
+                      </span>
+                    </div>
+                    <p className="pss-ingredient-card__code">
+                      BMTS-NOG
+                    </p>
+                    <p className="pss-ingredient-card__area">
+                      모낭
+                    </p>
+                    <p className="pss-ingredient-card__name">
+                      노진 단백질
+                    </p>
+                    <p className="pss-ingredient-card__desc">
+                      모발 성장 촉진, 휴지기 모낭 활성화
+                    </p>
+                  </div>
+                  <div className="pss-ingredient-card">
+                    <div className="pss-ingredient-card__top">
+                      <div className="pss-ingredient-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10 2v7.31" />
+                          <path d="M14 9.3V1.99" />
+                          <path d="M8.5 2h7" />
+                          <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                          <path d="M5.58 16.5h12.85" />
+                        </svg>
+                      </div>
+                      <span className="pss-ingredient-card__ppm">
+                        2ppm
+                      </span>
+                    </div>
+                    <p className="pss-ingredient-card__code">
+                      BMTS-AUT-KGF2
+                    </p>
+                    <p className="pss-ingredient-card__area">
+                      모낭
+                    </p>
+                    <p className="pss-ingredient-card__name">
+                      케라티노사이트 성장인자
+                    </p>
+                    <p className="pss-ingredient-card__desc">
+                      두피 표피 회복, 장벽 강화, 모낭 발달 촉진
+                    </p>
+                  </div>
+                  <div className="pss-ingredient-card">
+                    <div className="pss-ingredient-card__top">
+                      <div className="pss-ingredient-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10 2v7.31" />
+                          <path d="M14 9.3V1.99" />
+                          <path d="M8.5 2h7" />
+                          <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                          <path d="M5.58 16.5h12.85" />
+                        </svg>
+                      </div>
+                      <span className="pss-ingredient-card__ppm">
+                        1ppm
+                      </span>
+                    </div>
+                    <p className="pss-ingredient-card__code">
+                      BMTS-AUT-IGF1
+                    </p>
+                    <p className="pss-ingredient-card__area">
+                      두피
+                    </p>
+                    <p className="pss-ingredient-card__name">
+                      인슐린유사 성장인자
+                    </p>
+                    <p className="pss-ingredient-card__desc">
+                      모낭 세포 성장, 모발 재생력 증진
+                    </p>
+                  </div>
+                </div>
+                <h3 className="pss-section-title">
+                  <span className="pss-section-title__left">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                      <line x1="3" y1="6" x2="21" y2="6" />
+                      <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                    추천 제품
+                  </span>
+                  <Link href="/cosmetic" className="pss-section-title__link">
+                    제품들 더 보러가기 →
+                  </Link>
+                </h3>
+                <div className="pss-products-grid">
+                  <div className="prod-card">
+                    <div className="prod-card__img-wrap">
+                      <img className="prod-card__img" src="https://images.unsplash.com/photo-1522338242992-e1a54906a8da?auto=format&fit=crop&w=600&q=70" alt="보닉스 헤어 리보 세럼" loading="lazy" />
+                      <div className="prod-card__img-tags">
+                        <span className="prod-img-tag">
+                          두피진정
+                        </span>
+                        <span className="prod-img-tag">
+                          두피영양
+                        </span>
+                      </div>
+                    </div>
+                    <div className="prod-card__body">
+                      <h3 className="prod-card__name">
+                        보닉스 헤어 리보 세럼
+                      </h3>
+                      <div className="prod-card__meta">
+                        <span className="prod-card__price">
+                          440,000원
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="prod-card">
+                    <div className="prod-card__img-wrap">
+                      <img className="prod-card__img" src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=70" alt="더:스트 고농축 휴그로 H 30ea" loading="lazy" />
+                      <div className="prod-card__img-tags">
+                        <span className="prod-img-tag">
+                          탈모개선
+                        </span>
+                        <span className="prod-img-tag">
+                          각질완화
+                        </span>
+                      </div>
+                    </div>
+                    <div className="prod-card__body">
+                      <h3 className="prod-card__name">
+                        더:스트 고농축 휴그로 H 원료형 화장품 (두피용, 30ea)
+                      </h3>
+                      <div className="prod-card__meta">
+                        <span className="prod-card__price">
+                          220,000원
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="prod-card">
+                    <div className="prod-card__img-wrap">
+                      <img className="prod-card__img" src="https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?auto=format&fit=crop&w=600&q=70" alt="더:스트 고농축 휴그로 H 15ea" loading="lazy" />
+                      <div className="prod-card__img-tags">
+                        <span className="prod-img-tag">
+                          탈모개선
+                        </span>
+                        <span className="prod-img-tag">
+                          각질완화
+                        </span>
+                      </div>
+                    </div>
+                    <div className="prod-card__body">
+                      <h3 className="prod-card__name">
+                        더:스트 고농축 휴그로 H 원료형 화장품 (두피용, 15ea)
+                      </h3>
+                      <div className="prod-card__meta">
+                        <span className="prod-card__price">
+                          110,000원
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* SLIDE 1: 지성 두피 */}
+              <div className="pss-hair-slide" role="tabpanel" aria-label="지성 두피">
+                <div className="pss-comment-card">
+                  <p className="pss-comment-card__label">
+                    <span aria-hidden="true">
+                      ✦
+                    </span>
+                    AI 분석 코멘트
+                    <span aria-hidden="true">
+                      ✦
+                    </span>
+                  </p>
+                  <p className="pss-comment-card__body">
+                    두피 밸런스 케어와 청결 관리에 집중하여 건강하고 쾌적한 두피 환경 유지에 도움을 줍니다.
+                  </p>
+                  <div className="pss-focus">
+                    <span className="pss-focus__label">
+                      <span aria-hidden="true">
+                        ✦
+                      </span>
+                      집중 케어 항목
+                    </span>
+                    <div className="pss-focus-tags">
+                      <span className="pss-focus-tag">
+                        과다 피지
+                      </span>
+                      <span className="pss-focus-tag">
+                        두피 트러블
+                      </span>
+                      <span className="pss-focus-tag">
+                        모공 막힘
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <h3 className="pss-section-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                    <path d="M10 2v7.31" />
+                    <path d="M14 9.3V1.99" />
+                    <path d="M8.5 2h7" />
+                    <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                    <path d="M5.58 16.5h12.85" />
+                  </svg>
+                  추천 성분
+                </h3>
+                <div className="pss-hair-ings">
+                  <div className="pss-ingredient-card">
+                    <div className="pss-ingredient-card__top">
+                      <div className="pss-ingredient-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10 2v7.31" />
+                          <path d="M14 9.3V1.99" />
+                          <path d="M8.5 2h7" />
+                          <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                          <path d="M5.58 16.5h12.85" />
+                        </svg>
+                      </div>
+                      <span className="pss-ingredient-card__ppm">
+                        1ppm
+                      </span>
+                    </div>
+                    <p className="pss-ingredient-card__code">
+                      BMTS-AUT-SOD1
+                    </p>
+                    <p className="pss-ingredient-card__area">
+                      두피
+                    </p>
+                    <p className="pss-ingredient-card__name">
+                      항산화 효소
+                    </p>
+                    <p className="pss-ingredient-card__desc">
+                      두피 세포 보호, 산화 스트레스 감소
+                    </p>
+                  </div>
+                  <div className="pss-ingredient-card">
+                    <div className="pss-ingredient-card__top">
+                      <div className="pss-ingredient-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10 2v7.31" />
+                          <path d="M14 9.3V1.99" />
+                          <path d="M8.5 2h7" />
+                          <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                          <path d="M5.58 16.5h12.85" />
+                        </svg>
+                      </div>
+                      <span className="pss-ingredient-card__ppm">
+                        2ppm
+                      </span>
+                    </div>
+                    <p className="pss-ingredient-card__code">
+                      BMTS-AUT-KGF2
+                    </p>
+                    <p className="pss-ingredient-card__area">
+                      두피
+                    </p>
+                    <p className="pss-ingredient-card__name">
+                      케라티노사이트 성장인자
+                    </p>
+                    <p className="pss-ingredient-card__desc">
+                      두피 표피 회복, 장벽 강화, 모낭 발달 촉진
+                    </p>
+                  </div>
+                  <div className="pss-ingredient-card">
+                    <div className="pss-ingredient-card__top">
+                      <div className="pss-ingredient-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10 2v7.31" />
+                          <path d="M14 9.3V1.99" />
+                          <path d="M8.5 2h7" />
+                          <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                          <path d="M5.58 16.5h12.85" />
+                        </svg>
+                      </div>
+                      <span className="pss-ingredient-card__ppm">
+                        1ppm
+                      </span>
+                    </div>
+                    <p className="pss-ingredient-card__code">
+                      BMTS-Collagen
+                    </p>
+                    <p className="pss-ingredient-card__area">
+                      두피
+                    </p>
+                    <p className="pss-ingredient-card__name">
+                      콜라겐
+                    </p>
+                    <p className="pss-ingredient-card__desc">
+                      두피 구조 지지, 모근 환경 개선
+                    </p>
+                  </div>
+                </div>
+                <h3 className="pss-section-title">
+                  <span className="pss-section-title__left">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                      <line x1="3" y1="6" x2="21" y2="6" />
+                      <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                    추천 제품
+                  </span>
+                  <Link href="/cosmetic" className="pss-section-title__link">
+                    제품들 더 보러가기 →
+                  </Link>
+                </h3>
+                <div className="pss-products-grid">
+                  <div className="prod-card">
+                    <div className="prod-card__img-wrap">
+                      <img className="prod-card__img" src="https://images.unsplash.com/photo-1522338242992-e1a54906a8da?auto=format&fit=crop&w=600&q=70" alt="보닉스 헤어 리보 세럼" loading="lazy" />
+                      <div className="prod-card__img-tags">
+                        <span className="prod-img-tag">
+                          두피진정
+                        </span>
+                        <span className="prod-img-tag">
+                          두피영양
+                        </span>
+                      </div>
+                    </div>
+                    <div className="prod-card__body">
+                      <h3 className="prod-card__name">
+                        보닉스 헤어 리보 세럼
+                      </h3>
+                      <div className="prod-card__meta">
+                        <span className="prod-card__price">
+                          440,000원
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="prod-card">
+                    <div className="prod-card__img-wrap">
+                      <img className="prod-card__img" src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=70" alt="더:스트 고농축 휴그로 H 30ea" loading="lazy" />
+                      <div className="prod-card__img-tags">
+                        <span className="prod-img-tag">
+                          탈모개선
+                        </span>
+                        <span className="prod-img-tag">
+                          각질완화
+                        </span>
+                      </div>
+                    </div>
+                    <div className="prod-card__body">
+                      <h3 className="prod-card__name">
+                        더:스트 고농축 휴그로 H 원료형 화장품 (두피용, 30ea)
+                      </h3>
+                      <div className="prod-card__meta">
+                        <span className="prod-card__price">
+                          220,000원
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="prod-card">
+                    <div className="prod-card__img-wrap">
+                      <img className="prod-card__img" src="https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?auto=format&fit=crop&w=600&q=70" alt="더:스트 고농축 휴그로 H 15ea" loading="lazy" />
+                      <div className="prod-card__img-tags">
+                        <span className="prod-img-tag">
+                          탈모개선
+                        </span>
+                        <span className="prod-img-tag">
+                          각질완화
+                        </span>
+                      </div>
+                    </div>
+                    <div className="prod-card__body">
+                      <h3 className="prod-card__name">
+                        더:스트 고농축 휴그로 H 원료형 화장품 (두피용, 15ea)
+                      </h3>
+                      <div className="prod-card__meta">
+                        <span className="prod-card__price">
+                          110,000원
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* SLIDE 2: 민감 두피 */}
+              <div className="pss-hair-slide" role="tabpanel" aria-label="민감 두피">
+                <div className="pss-comment-card">
+                  <p className="pss-comment-card__label">
+                    <span aria-hidden="true">
+                      ✦
+                    </span>
+                    AI 분석 코멘트
+                    <span aria-hidden="true">
+                      ✦
+                    </span>
+                  </p>
+                  <p className="pss-comment-card__body">
+                    두피 장벽 케어와 진정 관리에 집중하여 편안하고 건강한 두피 컨디션 유지에 도움을 줍니다.
+                  </p>
+                  <div className="pss-focus">
+                    <span className="pss-focus__label">
+                      <span aria-hidden="true">
+                        ✦
+                      </span>
+                      집중 케어 항목
+                    </span>
+                    <div className="pss-focus-tags">
+                      <span className="pss-focus-tag">
+                        가려움
+                      </span>
+                      <span className="pss-focus-tag">
+                        두피 붉어짐
+                      </span>
+                      <span className="pss-focus-tag">
+                        장벽 약화
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <h3 className="pss-section-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                    <path d="M10 2v7.31" />
+                    <path d="M14 9.3V1.99" />
+                    <path d="M8.5 2h7" />
+                    <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                    <path d="M5.58 16.5h12.85" />
+                  </svg>
+                  추천 성분
+                </h3>
+                <div className="pss-hair-ings">
+                  <div className="pss-ingredient-card">
+                    <div className="pss-ingredient-card__top">
+                      <div className="pss-ingredient-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10 2v7.31" />
+                          <path d="M14 9.3V1.99" />
+                          <path d="M8.5 2h7" />
+                          <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                          <path d="M5.58 16.5h12.85" />
+                        </svg>
+                      </div>
+                      <span className="pss-ingredient-card__ppm">
+                        2ppm
+                      </span>
+                    </div>
+                    <p className="pss-ingredient-card__code">
+                      BMTS-AUT-KGF2
+                    </p>
+                    <p className="pss-ingredient-card__area">
+                      두피
+                    </p>
+                    <p className="pss-ingredient-card__name">
+                      케라티노사이트 성장인자
+                    </p>
+                    <p className="pss-ingredient-card__desc">
+                      두피 표피 회복, 장벽 강화, 모낭 발달 촉진
+                    </p>
+                  </div>
+                  <div className="pss-ingredient-card">
+                    <div className="pss-ingredient-card__top">
+                      <div className="pss-ingredient-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10 2v7.31" />
+                          <path d="M14 9.3V1.99" />
+                          <path d="M8.5 2h7" />
+                          <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                          <path d="M5.58 16.5h12.85" />
+                        </svg>
+                      </div>
+                      <span className="pss-ingredient-card__ppm">
+                        1ppm
+                      </span>
+                    </div>
+                    <p className="pss-ingredient-card__code">
+                      BMTS-AUT-SOD1
+                    </p>
+                    <p className="pss-ingredient-card__area">
+                      두피
+                    </p>
+                    <p className="pss-ingredient-card__name">
+                      항산화 효소
+                    </p>
+                    <p className="pss-ingredient-card__desc">
+                      두피 세포 보호, 산화 스트레스 감소
+                    </p>
+                  </div>
+                  <div className="pss-ingredient-card">
+                    <div className="pss-ingredient-card__top">
+                      <div className="pss-ingredient-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10 2v7.31" />
+                          <path d="M14 9.3V1.99" />
+                          <path d="M8.5 2h7" />
+                          <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                          <path d="M5.58 16.5h12.85" />
+                        </svg>
+                      </div>
+                      <span className="pss-ingredient-card__ppm">
+                        0.5ppm
+                      </span>
+                    </div>
+                    <p className="pss-ingredient-card__code">
+                      BMTS-AUT-IGF1
+                    </p>
+                    <p className="pss-ingredient-card__area">
+                      두피
+                    </p>
+                    <p className="pss-ingredient-card__name">
+                      인슐린유사 성장인자
+                    </p>
+                    <p className="pss-ingredient-card__desc">
+                      모낭 세포 성장, 모발 재생력 증진
+                    </p>
+                  </div>
+                  <div className="pss-ingredient-card">
+                    <div className="pss-ingredient-card__top">
+                      <div className="pss-ingredient-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10 2v7.31" />
+                          <path d="M14 9.3V1.99" />
+                          <path d="M8.5 2h7" />
+                          <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                          <path d="M5.58 16.5h12.85" />
+                        </svg>
+                      </div>
+                      <span className="pss-ingredient-card__ppm">
+                        1ppm
+                      </span>
+                    </div>
+                    <p className="pss-ingredient-card__code">
+                      BMTS-Collagen
+                    </p>
+                    <p className="pss-ingredient-card__area">
+                      두피
+                    </p>
+                    <p className="pss-ingredient-card__name">
+                      콜라겐
+                    </p>
+                    <p className="pss-ingredient-card__desc">
+                      두피 구조 지지, 모근 환경 개선
+                    </p>
+                  </div>
+                </div>
+                <h3 className="pss-section-title">
+                  <span className="pss-section-title__left">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                      <line x1="3" y1="6" x2="21" y2="6" />
+                      <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                    추천 제품
+                  </span>
+                  <Link href="/cosmetic" className="pss-section-title__link">
+                    제품들 더 보러가기 →
+                  </Link>
+                </h3>
+                <div className="pss-products-grid">
+                  <div className="prod-card">
+                    <div className="prod-card__img-wrap">
+                      <img className="prod-card__img" src="https://images.unsplash.com/photo-1522338242992-e1a54906a8da?auto=format&fit=crop&w=600&q=70" alt="보닉스 헤어 리보 세럼" loading="lazy" />
+                      <div className="prod-card__img-tags">
+                        <span className="prod-img-tag">
+                          두피진정
+                        </span>
+                        <span className="prod-img-tag">
+                          두피영양
+                        </span>
+                      </div>
+                    </div>
+                    <div className="prod-card__body">
+                      <h3 className="prod-card__name">
+                        보닉스 헤어 리보 세럼
+                      </h3>
+                      <div className="prod-card__meta">
+                        <span className="prod-card__price">
+                          440,000원
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="prod-card">
+                    <div className="prod-card__img-wrap">
+                      <img className="prod-card__img" src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=70" alt="더:스트 고농축 휴그로 H 30ea" loading="lazy" />
+                      <div className="prod-card__img-tags">
+                        <span className="prod-img-tag">
+                          탈모개선
+                        </span>
+                        <span className="prod-img-tag">
+                          각질완화
+                        </span>
+                      </div>
+                    </div>
+                    <div className="prod-card__body">
+                      <h3 className="prod-card__name">
+                        더:스트 고농축 휴그로 H 원료형 화장품 (두피용, 30ea)
+                      </h3>
+                      <div className="prod-card__meta">
+                        <span className="prod-card__price">
+                          220,000원
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="prod-card">
+                    <div className="prod-card__img-wrap">
+                      <img className="prod-card__img" src="https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?auto=format&fit=crop&w=600&q=70" alt="더:스트 고농축 휴그로 H 15ea" loading="lazy" />
+                      <div className="prod-card__img-tags">
+                        <span className="prod-img-tag">
+                          탈모개선
+                        </span>
+                        <span className="prod-img-tag">
+                          각질완화
+                        </span>
+                      </div>
+                    </div>
+                    <div className="prod-card__body">
+                      <h3 className="prod-card__name">
+                        더:스트 고농축 휴그로 H 원료형 화장품 (두피용, 15ea)
+                      </h3>
+                      <div className="prod-card__meta">
+                        <span className="prod-card__price">
+                          110,000원
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* /pss-hair-track */}
+          </div>
+          {/* /pss-hair-slider */}
+          {/* 좌우 내비게이션 */}
+          <div className="pss-hair-nav">
+            <button className="pss-hair-nav__btn pss-hair-prev" id="pssHairPrev" aria-label="이전 카테고리">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <div className="pss-hair-dots" id="pssHairDots">
+              <button className="pss-hair-dot is-active" data-htab="0" aria-label="탈모 고민" />
+              <button className="pss-hair-dot" data-htab="1" aria-label="지성 두피" />
+              <button className="pss-hair-dot" data-htab="2" aria-label="민감 두피" />
+            </div>
+            <button className="pss-hair-nav__btn pss-hair-next" id="pssHairNext" aria-label="다음 카테고리">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+    </SiteLayout>
+  );
+}

@@ -7,3 +7,13 @@ MD/
 
 # 디자인 시스템 파일
 design-system.html
+
+# Next.js
+/.next/
+/out/
+/node_modules/
+next-env.d.ts
+*.tsbuildinfo
+
+# build artifact
+scripts/_pagedata.json
